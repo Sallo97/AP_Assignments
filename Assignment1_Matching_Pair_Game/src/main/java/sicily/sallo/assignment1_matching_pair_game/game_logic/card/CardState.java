@@ -25,7 +25,10 @@ public enum CardState {
     private final Color color;
 
     /**
-     * Base Constructor
+     * Constructs a CardState with an associated background color:
+     * - `EXCLUDED` -> RED.
+     * - `FACE_DOWN` -> GREEN.
+     * - `FACE_UP` -> WHITE.
      */
     CardState(Color color) {
         this.color = color;
