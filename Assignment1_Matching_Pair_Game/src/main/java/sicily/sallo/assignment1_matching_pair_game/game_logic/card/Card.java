@@ -6,11 +6,7 @@ package sicily.sallo.assignment1_matching_pair_game.game_logic.card;
 
 // Imports
 import javax.swing.JButton;
-import java.beans.PropertyChangeListener;
-import java.beans.PropertyChangeSupport;
-import java.beans.VetoableChangeSupport;
-import java.beans.PropertyVetoException;
-import java.beans.VetoableChangeListener;
+import java.beans.*;
 import java.io.Serializable;
 import java.util.Objects;
 
@@ -28,14 +24,12 @@ import java.util.Objects;
  * 
  * @author Salvatore Salerno
  */
-public class Card extends JButton implements Serializable {
+public class Card extends JButton implements Serializable, PropertyChangeListener {
 
     // Properties
     private int width; private int height;
     private int value; // (bound + constrained)
     private CardState state; // (bound + contrained)
-    private final PropertyChangeSupport mPcs = new PropertyChangeSupport(this);
-    private final VetoableChangeSupport mVcs = new VetoableChangeSupport(this);
 
     // Constructors
     /**
@@ -45,9 +39,9 @@ public class Card extends JButton implements Serializable {
      * and a mouse click event listener is attached to handle user interactions.
      */
     public Card() {
-        super();
+        super(); //TODO VEDI SE PUOI LEVARLO
 
-        // Set property
+        // Set properties
         this.state = CardState.FACE_DOWN;
         this.changeAppearance();
 
@@ -88,6 +82,28 @@ public class Card extends JButton implements Serializable {
     }
     
     // Public methods
+
+    /**
+     * TODO ADD A BETTER DESCRIPTION
+     * @param evt A PropertyChangeEvent object describing the event source
+     *          and the property that has changed.
+     */
+    @Override
+    public void propertyChange(PropertyChangeEvent evt) {
+        // Check if it is a change for the state or the value
+        switch (evt.getPropertyName()) {
+            case "state":
+                // Check if the Card is FACE_UP, if so change its state according to the event
+                if(this.state == CardState.FACE_UP){
+                    this.setState((CardState)evt.getNewValue());
+                }
+                break;
+            case "value":
+                // TODO
+                break;
+        }
+    }
+
     /**
      * @return the value of the card.
      */
@@ -105,9 +121,9 @@ public class Card extends JButton implements Serializable {
      */
     public void setValue(int newVal) throws PropertyVetoException {
         int oldVal = value;
-        mVcs.fireVetoableChange("value", oldVal, newVal);        
+        this.fireVetoableChange("value", oldVal, newVal);
         value = newVal;
-        mPcs.firePropertyChange("value", oldVal, newVal);
+        this.firePropertyChange("value", oldVal, newVal);
     }
     
     /**
@@ -123,17 +139,19 @@ public class Card extends JButton implements Serializable {
      * registered vetoable listeners.
      * 
      * @param newState: the new state to set for the card.
-     * 
-     * @throws PropertyVetoException if any vetoable listener rejects the state change.
      */
-    public void setState(CardState newState) throws PropertyVetoException {
+    public void setState(CardState newState)  {
         CardState oldState = state;
-        mVcs.fireVetoableChange("state", oldState, newState);
-        state = newState;
-        this.changeAppearance();
-        mPcs.firePropertyChange("state", oldState, newState);
-
+        try{
+            this.fireVetoableChange("state", oldState, newState);
+            state = newState;
+            this.changeAppearance();
+            this.firePropertyChange("state", oldState, newState);
+        } catch(PropertyVetoException e){
+            //TODO
+        }
     }
+
 
     public int getWidth(){
         return width;
@@ -149,26 +167,6 @@ public class Card extends JButton implements Serializable {
 
     public void setHeight(int newHeight){
         height = newHeight;
-    }
-    
-    @Override
-    public void addPropertyChangeListener(PropertyChangeListener listener) {
-        mPcs.addPropertyChangeListener(listener);
-    }
-    
-    @Override
-    public void removePropertyChangeListener(PropertyChangeListener listener) {
-        mPcs.removePropertyChangeListener(listener);
-    }
-    
-    @Override
-    public void addVetoableChangeListener(VetoableChangeListener listener) {
-        mVcs.addVetoableChangeListener(listener);
-    }
-    
-    @Override
-    public void removeVetoableChangeListener(VetoableChangeListener listener) {
-        mVcs.removeVetoableChangeListener(listener);
     }
 
     // Private methods
@@ -191,11 +189,13 @@ public class Card extends JButton implements Serializable {
      */
     private void changeAppearance(){
         // Set background color
+
         this.setBackground(state.getColor());
         // Set the text of the card logic
         if (Objects.requireNonNull(state) == CardState.FACE_UP) {
             this.setText(String.valueOf(this.value));
-        } else {// Both EXCLUDED and FACE_DOWN have the value hidden
+        } else {
+            // Both EXCLUDED and FACE_DOWN have the value hidden
             this.setText("?");
         }
     }
@@ -210,13 +210,9 @@ public class Card extends JButton implements Serializable {
         CardState newState;
         if (Objects.requireNonNull(state) == CardState.FACE_DOWN) {
             newState = CardState.FACE_UP;
-            // Tells the registered objs the value of the card
-
         } else {
             newState = CardState.FACE_DOWN;
         }
-        try{
-            this.setState(newState);
-        }catch (PropertyVetoException e) { }
+        this.setState(newState);
     }
 }
