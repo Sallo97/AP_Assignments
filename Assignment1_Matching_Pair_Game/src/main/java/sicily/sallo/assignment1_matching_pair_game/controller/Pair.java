@@ -1,5 +1,7 @@
 package sicily.sallo.assignment1_matching_pair_game.controller;
 
+import java.util.OptionalInt;
+
 /**
  * Represents a Pair of FACE_UP Cards
  */
@@ -22,13 +24,14 @@ public class Pair {
      * @param value = the value to set the card
      */
     public void addValue(int value){
-        if (v1.isNone()){
-            v1 = OptionalInt.some(value);
+        if (v1.isEmpty()){
+            v1 = OptionalInt.of(value);
         }
-        else if (v2.isNone()){
-            v2 = OptionalInt.some(value);
+        else if (v2.isEmpty()){
+            v2 = OptionalInt.of(value);
+        } else{
+            // TODO if both are already faceUP throw an exception
         }
-        // TODO if both are already faceUP throw an exception
     }
 
     /**
@@ -36,18 +39,15 @@ public class Pair {
      *         false otherwise
      */
     public boolean areEqual(){
-        if(v1.isSome() && v2.isSome()){
-            return v1.unwrap() == v2.unwrap();
-        }
-        return false;
+        return v1.equals(v2);
     }
 
     /**
      * set the Cards back to None
      */
     public void reset(){
-        v1 = OptionalInt.NONE;
-        v2 = OptionalInt.NONE;
+        v1 = OptionalInt.empty();
+        v2 = OptionalInt.empty();
     }
 
     /**
@@ -55,7 +55,7 @@ public class Pair {
      *         false otherwise
      */
     public boolean isPairFull() {
-        return v1.isSome() && v2.isSome();
+        return v1.isPresent() && v2.isPresent();
     }
 
     /**
@@ -63,7 +63,7 @@ public class Pair {
      *         false otherwise
      */
     public boolean isPairNone() {
-        return v1.isNone() && v2.isNone();
+        return v1.isEmpty() && v2.isEmpty();
     }
 
 
