@@ -31,8 +31,7 @@ import java.util.Objects;
 public class Card extends JButton implements Serializable {
 
     // Properties
-    private int width = 150; // in pixels
-    private int height = 200; // in pixels
+    private int width; private int height;
     private int value; // (bound + constrained)
     private CardState state; // (bound + contrained)
     private final PropertyChangeSupport mPcs = new PropertyChangeSupport(this);
@@ -40,21 +39,17 @@ public class Card extends JButton implements Serializable {
 
     // Constructors
     /**
-     * Constructs an empty Card instance.
-     * The card is initialized with the EXCLUDED state.
-     *
+     * Default constructor for creating a new Card instance.
+     * This constructor is primarily defined to support the Serializable interface.
+     * The card is initialized in the FACE_DOWN state, its appearance is updated,
+     * and a mouse click event listener is attached to handle user interactions.
      */
-
     public Card() {
         super();
 
         // Set property
-        this.value = value;
         this.state = CardState.FACE_DOWN;
         this.changeAppearance();
-
-        // TODO Set the size dynamically depending on the # of cards the board will display
-        this.setSize(width, height);
 
         // Set Mouse Event when clicked
         this.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -62,17 +57,18 @@ public class Card extends JButton implements Serializable {
                 cardClicked();
             }
         });
-
-        // TODO Become a listener for Controller
-
     }
+
     /**
-     * Constructs a new Card instance with the specified value.
-     * The card is initialized with the FACE_DOWN state.
+     * Creates a new Card instance with the specified value and game difficulty.
+     * The card is initially set to the FACE_DOWN state and its appearance is updated accordingly.
+     * The size of the card is dynamically adjusted based on the provided game difficulty.
+     * Additionally, a mouse click event listener is attached to handle user interactions.
      *
-     * @param value: the numeric value assigned to the card
+     * @param value      the numeric value assigned to the card
+     * @param difficulty the game difficulty level, which determines the card's size
      */
-    public Card(int value) {
+    public Card(int value, GameDifficulty difficulty) {
         super();
         
         // Set property
@@ -80,8 +76,8 @@ public class Card extends JButton implements Serializable {
         this.state = CardState.FACE_DOWN;
         this.changeAppearance();
 
-        // TODO Set the size dynamically depending on the # of cards the board will display
-        this.setSize(width, height);
+        //Set the size dynamically depending on the difficulty
+        this.setSize(difficulty);
         
         // Set Mouse Event when clicked
         this.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -89,8 +85,6 @@ public class Card extends JButton implements Serializable {
                 cardClicked();
             }
         });
-        
-        // TODO Become a listener for Controller
     }
     
     // Public methods
@@ -140,6 +134,22 @@ public class Card extends JButton implements Serializable {
         mPcs.firePropertyChange("state", oldState, newState);
 
     }
+
+    public int getWidth(){
+        return width;
+    }
+
+    public void setWidth(int newWidth){
+        width = newWidth;
+    }
+
+    public int getHeight(){
+        return height;
+    }
+
+    public void setHeight(int newHeight){
+        height = newHeight;
+    }
     
     @Override
     public void addPropertyChangeListener(PropertyChangeListener listener) {
@@ -162,6 +172,16 @@ public class Card extends JButton implements Serializable {
     }
 
     // Private methods
+    /**
+     * Checks the GameDifficulty and set the size of the Card accordingly
+     */
+    private void setSize(GameDifficulty difficulty) {
+        int newWidth = difficulty.getWidth();
+        int newHeight = difficulty.getHeight();
+
+        this.setSize(newWidth, newHeight);
+    }
+
     /**
      * Updates the card's appearance based on its current state. 
      * Adjusts the background color and the text displayed on the card.
