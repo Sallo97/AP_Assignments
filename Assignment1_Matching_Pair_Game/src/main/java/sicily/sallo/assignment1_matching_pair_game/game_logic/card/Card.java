@@ -11,6 +11,7 @@ import java.beans.PropertyChangeSupport;
 import java.beans.VetoableChangeSupport;
 import java.beans.PropertyVetoException;
 import java.beans.VetoableChangeListener;
+import java.io.Serializable;
 import java.util.Objects;
 
 /**
@@ -27,17 +28,44 @@ import java.util.Objects;
  * 
  * @author Salvatore Salerno
  */
-public class Card extends JButton {
+public class Card extends JButton implements Serializable {
 
     // Properties
-    private static int width = 150;
-    private static int height = 200;
+    private int width = 150; // in pixels
+    private int height = 200; // in pixels
     private int value; // (bound + constrained)
     private CardState state; // (bound + contrained)
     private final PropertyChangeSupport mPcs = new PropertyChangeSupport(this);
     private final VetoableChangeSupport mVcs = new VetoableChangeSupport(this);
 
     // Constructors
+    /**
+     * Constructs an empty Card instance.
+     * The card is initialized with the EXCLUDED state.
+     *
+     */
+
+    public Card() {
+        super();
+
+        // Set property
+        this.value = value;
+        this.state = CardState.FACE_DOWN;
+        this.changeAppearance();
+
+        // TODO Set the size dynamically depending on the # of cards the board will display
+        this.setSize(width, height);
+
+        // Set Mouse Event when clicked
+        this.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt){
+                cardClicked();
+            }
+        });
+
+        // TODO Become a listener for Controller
+
+    }
     /**
      * Constructs a new Card instance with the specified value.
      * The card is initialized with the FACE_DOWN state.
@@ -110,6 +138,7 @@ public class Card extends JButton {
         state = newState;
         this.changeAppearance();
         mPcs.firePropertyChange("state", oldState, newState);
+
     }
     
     @Override
@@ -161,6 +190,8 @@ public class Card extends JButton {
         CardState newState;
         if (Objects.requireNonNull(state) == CardState.FACE_DOWN) {
             newState = CardState.FACE_UP;
+            // Tells the registered objs the value of the card
+
         } else {
             newState = CardState.FACE_DOWN;
         }
