@@ -1,4 +1,4 @@
-package sicily.sallo.assignment1_matching_pair_game.controller;
+package sicily.sallo.assignment1_matching_pair_game.game_logic.controller;
 
 import java.util.OptionalInt;
 
@@ -65,7 +65,4 @@ public class Pair {
     public boolean isPairNone() {
         return v1.isEmpty() && v2.isEmpty();
     }
-
-
-
 }

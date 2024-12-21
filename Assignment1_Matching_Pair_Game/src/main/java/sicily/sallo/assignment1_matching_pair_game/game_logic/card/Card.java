@@ -66,9 +66,6 @@ public class Card extends JButton implements Serializable, PropertyChangeListene
         super();
         
         // Set property
-        this.value = value;
-        this.state = CardState.FACE_DOWN;
-        this.changeAppearance();
 
         //Set the size dynamically depending on the difficulty
         this.setSize(difficulty);
@@ -119,11 +116,13 @@ public class Card extends JButton implements Serializable, PropertyChangeListene
      * 
      * @throws PropertyVetoException if any vetoable listener rejects the change.
      */
-    public void setValue(int newVal) throws PropertyVetoException {
+    public void setValue(int newVal) {
         int oldVal = value;
-        this.fireVetoableChange("value", oldVal, newVal);
-        value = newVal;
-        this.firePropertyChange("value", oldVal, newVal);
+        try{
+            this.fireVetoableChange("value", oldVal, newVal);
+            value = newVal;
+            this.firePropertyChange("value", oldVal, newVal);
+        } catch (PropertyVetoException e) { /*TODO*/}
     }
     
     /**
@@ -215,4 +214,10 @@ public class Card extends JButton implements Serializable, PropertyChangeListene
         }
         this.setState(newState);
     }
+
+    private void reset(int newVal) {
+        setValue(newVal);
+        setState(CardState.FACE_DOWN);
+    }
 }
+

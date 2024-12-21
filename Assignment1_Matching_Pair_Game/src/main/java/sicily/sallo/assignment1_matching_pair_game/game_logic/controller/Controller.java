@@ -1,4 +1,4 @@
-package sicily.sallo.assignment1_matching_pair_game.controller;
+package sicily.sallo.assignment1_matching_pair_game.game_logic.controller;
 
 import sicily.sallo.assignment1_matching_pair_game.game_logic.card.Card;
 import sicily.sallo.assignment1_matching_pair_game.game_logic.card.CardState;
@@ -20,10 +20,7 @@ public class Controller extends JLabel implements Serializable, PropertyChangeLi
      */
     public Controller() {
         super(); //TODO VEDI SE PUOI LEVARLO
-
-        // Set property
-        matchedPairs = 0;
-        pair = new Pair();
+        this.reset();
     }
 
     // Public Methods
@@ -84,7 +81,7 @@ public class Controller extends JLabel implements Serializable, PropertyChangeLi
 
         // Check if the pair match
         if(pair.areEqual()) {
-            matchedPairs++;
+            this.setMatchedPairs(matchedPairs++);
             newState = CardState.EXCLUDED;
         }
 
@@ -95,5 +92,22 @@ public class Controller extends JLabel implements Serializable, PropertyChangeLi
         this.firePropertyChange("state", CardState.FACE_UP, newState);
     }
 
+    /**
+     * Set the new Value and change the value displayed
+     * @param newVal
+     */
+    private void setMatchedPairs(int newVal) {
+        this.matchedPairs = newVal;
+        this.setText("Found Pairs = " + this.matchedPairs);
+    }
+
+    /**
+     * Resets the class
+     */
+    private void reset() {
+        // Set property
+        this.setMatchedPairs(0);
+        pair = new Pair();
+    }
 
 }
