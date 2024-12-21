@@ -5,6 +5,8 @@
 package sicily.sallo.assignment1_matching_pair_game.game_logic.card;
 
 // Imports
+import sicily.sallo.assignment1_matching_pair_game.game_logic.GameDifficulty;
+
 import javax.swing.JButton;
 import java.beans.*;
 import java.io.Serializable;
@@ -27,6 +29,7 @@ import java.util.Objects;
 public class Card extends JButton implements Serializable, PropertyChangeListener {
 
     // Properties
+    private int id;
     private int width; private int height;
     private int value; // (bound + constrained)
     private CardState state; // (bound + contrained)
@@ -62,10 +65,12 @@ public class Card extends JButton implements Serializable, PropertyChangeListene
      * @param value      the numeric value assigned to the card
      * @param difficulty the game difficulty level, which determines the card's size
      */
-    public Card(int value, GameDifficulty difficulty) {
+    public Card(int id, int value, GameDifficulty difficulty) {
         super();
         
         // Set property
+        this.id = id;
+        setValue(value);
 
         //Set the size dynamically depending on the difficulty
         this.setSize(difficulty);
@@ -173,8 +178,8 @@ public class Card extends JButton implements Serializable, PropertyChangeListene
      * Checks the GameDifficulty and set the size of the Card accordingly
      */
     private void setSize(GameDifficulty difficulty) {
-        int newWidth = difficulty.getWidth();
-        int newHeight = difficulty.getHeight();
+        int newWidth = difficulty.getSize().getWidth();
+        int newHeight = difficulty.getSize().getHeight();
 
         this.setSize(newWidth, newHeight);
     }
@@ -215,6 +220,10 @@ public class Card extends JButton implements Serializable, PropertyChangeListene
         this.setState(newState);
     }
 
+    /**
+     * TODO Add better description
+     * @param newVal
+     */
     private void reset(int newVal) {
         setValue(newVal);
         setState(CardState.FACE_DOWN);

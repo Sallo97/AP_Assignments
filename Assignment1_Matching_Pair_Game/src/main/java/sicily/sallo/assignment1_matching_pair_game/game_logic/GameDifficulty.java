@@ -1,4 +1,4 @@
-package sicily.sallo.assignment1_matching_pair_game.game_logic.card;
+package sicily.sallo.assignment1_matching_pair_game.game_logic;
 
 /**
  * Defines the various difficulty setting of a Game, which amounts to the number of cards diplayed,
@@ -10,32 +10,31 @@ package sicily.sallo.assignment1_matching_pair_game.game_logic.card;
  * @author Salvatore Salerno
  */
 public enum GameDifficulty {
-    EASY(150, 200),
-    NORMAL(100, 150),
-    HARD(50, 100);
+    EASY(150, 200, 4),
+    NORMAL(100, 150, 8),
+    HARD(50, 100, 16);
 
-    private final int width;
-    private final int height;
-
+    private final Size size;
+    private final int numOfPairs;
     /**
      * Constructs a GameDifficulty with an associated size:
      */
-    GameDifficulty(int width, int height) {
-        this.width = width;
-        this.height = height;
+    GameDifficulty(int width, int height, int numOfPairs) {
+        size = new Size(width, height);
+        this.numOfPairs = numOfPairs;
     }
 
     /**
      * @return the size associated width to the state
      */
-    public int getWidth() {
-        return width;
+    public Size getSize(){
+        return size;
     }
 
     /**
-     * @return the size associated height to the state
+     * @return the number of pairs to find in this game setting
      */
-    public int getHeight() {
-        return height;
+    public int getNumOfPairs(){
+        return numOfPairs;
     }
 }
