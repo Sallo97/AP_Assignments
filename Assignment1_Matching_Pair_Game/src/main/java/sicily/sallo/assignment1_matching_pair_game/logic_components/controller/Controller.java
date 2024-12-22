@@ -1,7 +1,7 @@
-package sicily.sallo.assignment1_matching_pair_game.game_logic.controller;
+package sicily.sallo.assignment1_matching_pair_game.logic_components.controller;
 
-import sicily.sallo.assignment1_matching_pair_game.game_logic.card.Card;
-import sicily.sallo.assignment1_matching_pair_game.game_logic.card.CardState;
+import sicily.sallo.assignment1_matching_pair_game.logic_components.card.Card;
+import sicily.sallo.assignment1_matching_pair_game.logic_components.card.CardState;
 
 import javax.swing.*;
 import java.beans.*;
@@ -32,15 +32,19 @@ public class Controller extends JLabel implements Serializable, PropertyChangeLi
      */
     @Override
     public void propertyChange(PropertyChangeEvent evt) {
-        CardState state = (CardState) evt.getNewValue();
-        if(Objects.requireNonNull(state) == CardState.FACE_UP) {
+        String propertyName  = evt.getPropertyName();
+        if(propertyName.equals("state") &&
+                (CardState)evt.getNewValue() == CardState.FACE_UP) {
             // Sets the new value to the pair (TODO FIND MORE ELEGANT SOLUTION)
+            CardState state = (CardState) evt.getNewValue();
             Card c = (Card)evt.getSource();
             pair.addValue(c.getValue());
             // If the pair is full check if their values matches
             if(pair.isPairFull()){
                 checkMatch();
             }
+        } else if(propertyName.equals("reset")){
+            this.reset();
         }
     }
 

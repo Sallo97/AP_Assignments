@@ -2,10 +2,10 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-package sicily.sallo.assignment1_matching_pair_game.game_logic.card;
+package sicily.sallo.assignment1_matching_pair_game.logic_components.card;
 
 // Imports
-import sicily.sallo.assignment1_matching_pair_game.game_logic.GameDifficulty;
+import sicily.sallo.assignment1_matching_pair_game.common_enums.GameDifficulty;
 
 import javax.swing.JButton;
 import java.beans.*;
@@ -102,6 +102,11 @@ public class Card extends JButton implements Serializable, PropertyChangeListene
                 break;
             case "value":
                 // TODO
+                break;
+            case "reset":
+                // get the array contained in the event and set as new value A[this.id]
+                int[] A = (int[]) evt.getNewValue();
+                this.reset(A[this.id]);
                 break;
         }
     }

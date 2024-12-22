@@ -1,6 +1,6 @@
-package sicily.sallo.assignment1_matching_pair_game.game_logic.counter;
+package sicily.sallo.assignment1_matching_pair_game.logic_components.counter;
 
-import sicily.sallo.assignment1_matching_pair_game.game_logic.card.CardState;
+import sicily.sallo.assignment1_matching_pair_game.logic_components.card.CardState;
 import javax.swing.*;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
@@ -35,9 +35,12 @@ public class Counter extends JLabel implements Serializable, PropertyChangeListe
     @Override
     public void propertyChange(PropertyChangeEvent evt) {
         // Check if the property is a state and is FACE_UP
-        if (evt.getPropertyName().equals("state") &&
+        String propertyName  = evt.getPropertyName();
+        if (propertyName.equals("state") &&
                 evt.getNewValue() == CardState.FACE_UP) {
             setCounter(this.totFlips++);
+        } else if(propertyName.equals("reset")){
+            this.reset();
         }
     }
 

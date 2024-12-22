@@ -1,4 +1,4 @@
-package sicily.sallo.assignment1_matching_pair_game.game_logic;
+package sicily.sallo.assignment1_matching_pair_game.common_enums;
 
 /**
  * Defines the various difficulty setting of a Game, which amounts to the number of cards diplayed,
@@ -11,7 +11,7 @@ package sicily.sallo.assignment1_matching_pair_game.game_logic;
  */
 public enum GameDifficulty {
     EASY(150, 200, 4),
-    NORMAL(100, 150, 8),
+    MEDIUM(100, 150, 8),
     HARD(50, 100, 16);
 
     private final Size size;
