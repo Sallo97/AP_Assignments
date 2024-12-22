@@ -42,7 +42,6 @@ public class Card extends JButton implements Serializable, PropertyChangeListene
      * and a mouse click event listener is attached to handle user interactions.
      */
     public Card() {
-        super(); //TODO VEDI SE PUOI LEVARLO
 
         // Set properties
         this.state = CardState.FACE_DOWN;
@@ -124,7 +123,6 @@ public class Card extends JButton implements Serializable, PropertyChangeListene
      *
      * @param newVal: the new value to set for the card.
      * 
-     * @throws PropertyVetoException if any vetoable listener rejects the change.
      */
     public void setValue(int newVal) {
         int oldVal = value;
