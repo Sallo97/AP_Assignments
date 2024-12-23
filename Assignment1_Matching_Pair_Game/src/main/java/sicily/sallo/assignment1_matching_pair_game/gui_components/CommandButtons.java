@@ -1,8 +1,5 @@
 package sicily.sallo.assignment1_matching_pair_game.gui_components;
 
-import sicily.sallo.assignment1_matching_pair_game.logic_components.buttons.Exit;
-import sicily.sallo.assignment1_matching_pair_game.logic_components.buttons.Shuffle;
-
 import javax.swing.*;
 import java.awt.*;
 

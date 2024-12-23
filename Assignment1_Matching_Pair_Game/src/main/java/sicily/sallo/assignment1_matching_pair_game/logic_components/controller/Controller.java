@@ -1,15 +1,10 @@
 package sicily.sallo.assignment1_matching_pair_game.logic_components.controller;
 
 import sicily.sallo.assignment1_matching_pair_game.logic_components.card.Card;
-import sicily.sallo.assignment1_matching_pair_game.logic_components.card.OLDCard;
 import sicily.sallo.assignment1_matching_pair_game.logic_components.card.CardState;
-
 import javax.swing.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.beans.*;
 import java.io.Serializable;
-import java.util.Objects;
 
 /**
  * The `Controller` class manages the core game logic for a game.
@@ -135,7 +130,6 @@ public class Controller extends JLabel implements Serializable, PropertyChangeLi
      */
     private void setMatchedPairs(int newVal) {
         this.matchedPairs = newVal;
-        System.out.println("matchetPairs = " + matchedPairs);
         this.setText("PAIRS FOUND = " + this.matchedPairs);
     }
 

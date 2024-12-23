@@ -1,6 +1,4 @@
 package sicily.sallo.assignment1_matching_pair_game.gui_components;
-import sicily.sallo.assignment1_matching_pair_game.logic_components.controller.Controller;
-import sicily.sallo.assignment1_matching_pair_game.logic_components.counter.Counter;
 
 import javax.swing.*;
 import java.awt.*;
@@ -18,10 +16,7 @@ public class Board extends JFrame implements Serializable, ActionListener {
     JLabel gameTitle = new JLabel("MEMORY MATCHING GAME", SwingConstants.CENTER);
     DifficultyChooser difficultyChooser = new DifficultyChooser();
     CommandButtons commandButtons = new CommandButtons();
-    Controller controller = new Controller();
-    Counter counter = new Counter();
-    CardTable cardTable = new CardTable(controller, counter);
-    InformationTab infoTab;
+    CardTable cardTable = new CardTable();
 
     // Constructors
     /**
@@ -31,7 +26,6 @@ public class Board extends JFrame implements Serializable, ActionListener {
         // Setting Components
         this.setTitle("Memory Matching Game");
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        infoTab = new InformationTab(controller, counter);
 
         // Become Listener of Shuffle and Exit Button
         commandButtons.exitButton.addActionListener(this);
@@ -82,7 +76,7 @@ public class Board extends JFrame implements Serializable, ActionListener {
 
         // Create the values of n cards
         int[] values = randomDeck(numOfPairs, numOfCards);
-        cardTable.update(controller, counter, numOfCards, values);
+        cardTable.update(numOfCards, values);
 
         // Set the board accordingly
         setGameLayout();
@@ -104,8 +98,6 @@ public class Board extends JFrame implements Serializable, ActionListener {
     private void setGameLayout(){
         this.remove(gameTitle);
         this.remove(difficultyChooser);
-
-        this.add(infoTab, BorderLayout.NORTH);
         this.add(cardTable, BorderLayout.CENTER);
 
         this.revalidate();

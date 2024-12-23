@@ -2,9 +2,6 @@ package sicily.sallo.assignment1_matching_pair_game.gui_components;
 
 import sicily.sallo.assignment1_matching_pair_game.common_enums.GameDifficulty;
 import sicily.sallo.assignment1_matching_pair_game.logic_components.card.Card;
-import sicily.sallo.assignment1_matching_pair_game.logic_components.controller.Controller;
-import sicily.sallo.assignment1_matching_pair_game.logic_components.counter.Counter;
-
 import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
@@ -13,20 +10,23 @@ import java.util.ArrayList;
  * CardTable is a JPanel that represents a table of playing cards for a game.
  * It dynamically manages the layout and the number of cards displayed based on
  * the game's current difficulty setting.
+ * It contains also the Counter and Controller
  */
 public class CardTable extends JPanel{
     // Properties
     static final int maxCards = GameDifficulty.HARD.getNumOfCards();
     int nCards = maxCards;
     ArrayList<Card> deck = new ArrayList<>();
+    public InformationTab infoTab = new InformationTab();
+    JPanel cardsPanel = new JPanel();
 
     // Constructors
     /**
      * Default constructor that initializes the table with the default
      * number of cards (`maxCards`).
      */
-    public CardTable(Controller controller, Counter counter){
-        update(controller, counter, nCards);
+    public CardTable(){
+        update(nCards);
     }
 
     // Private methods
@@ -34,26 +34,25 @@ public class CardTable extends JPanel{
      * Updates the table showing the requested number of cards.
      * @param newCards The new number of cards to display on the table.
      */
-    public void update(Controller controller, Counter counter, int newCards){
+    public void update(int newCards){
         this.nCards = newCards;
         deck.ensureCapacity(nCards);
 
         // Add missing buttons
         for (int i = deck.size(); i < newCards; i++) {
-            //TODO Let Controller be a Listener to all cards
             Card card = new Card();
-            card.addVetoableChangeListener(controller);
-            card.addPropertyChangeListener(controller);
-            card.addPropertyChangeListener(counter);
-            controller.addPropertyChangeListener(card);
+            card.addVetoableChangeListener(infoTab.controller);
+            card.addPropertyChangeListener(infoTab.controller);
+            card.addPropertyChangeListener(infoTab.counter);
+            infoTab.controller.addPropertyChangeListener(card);
             deck.add(card);
-            add(card);
+            cardsPanel.add(card);
         }
 
         // Remove excess buttons
         while (deck.size() > newCards) {
             Card card = deck.get(deck.size() - 1);
-            remove(card);
+            cardsPanel.remove(card);
             deck.remove(card);
         }
 
@@ -67,8 +66,8 @@ public class CardTable extends JPanel{
      * @param newCards The new number of cards to display.
      * @param newVal An array of integers representing the values for each card.
      */
-    public void update(Controller controller, Counter counter, int newCards, int[] newVal){
-        update(controller, counter, newCards);
+    public void update(int newCards, int[] newVal){
+        update(newCards);
 
         // Set values of the cards
         for (int i = 0; i < newCards; i++) {
@@ -86,7 +85,10 @@ public class CardTable extends JPanel{
         int cols = (int) Math.ceil((double) nCards / rows);
 
         // Create the layout
-        this.setLayout(new GridLayout(rows,cols));
+        cardsPanel.setLayout(new GridLayout(rows, cols));
+        this.setLayout(new BorderLayout());
+        this.add(infoTab, BorderLayout.NORTH);
+        this.add(cardsPanel, BorderLayout.CENTER);
         this.revalidate();
         this.repaint();
     }

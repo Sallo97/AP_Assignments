@@ -10,15 +10,11 @@ import java.awt.*;
  */
 public class InformationTab extends JPanel {
     // Properties
-    private Controller controller;
-    private Counter counter;
+    public Controller controller = new Controller();
+    public Counter counter = new Counter();
 
     // Constructor
-    public InformationTab(Controller controller, Counter counter) {
-        // Set properties
-        this.controller = controller;
-        this.counter = counter;
-
+    public InformationTab() {
         // Set Layout
         setLayout(new FlowLayout(FlowLayout.LEFT, 10, 10)); // Centered with spacing
         this.add(controller);
