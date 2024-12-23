@@ -81,7 +81,6 @@ public class Board extends JFrame implements Serializable, ActionListener {
         int[] values = randomDeck(numOfPairs, numOfCards);
         cardTable.update(controller, numOfCards, values);
 
-
         // Set the board accordingly
         setGameLayout();
     }

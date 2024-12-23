@@ -5,68 +5,81 @@ import sicily.sallo.assignment1_matching_pair_game.logic_components.card.OLDCard
 import sicily.sallo.assignment1_matching_pair_game.logic_components.card.CardState;
 
 import javax.swing.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.beans.*;
 import java.io.Serializable;
 import java.util.Objects;
 
 /**
- * Controller handles the main game logic.
- * It listen to all Cards and when a Card flips FACE_UP, it records its value.
- * At most two cards can be FACE_UP at the same time.
- * When the second Card is FACE_UP, The Controller checks if the two matches.
- * If so tells that Card instances to become EXCLUDED, otherwise return FACE_DOWN
- * The Controller is a VetoableChangelistener to each Card. It forbids the change of state
- * if it is triggered by clicking on the card.
- * It also shows the number of pairs found so far by the player
+ * The `Controller` class manages the core game logic for a game.
+ * It listens to changes all active `Card` objects and enforces the following rules:
+ * - At most two cards can be face-up (`FACE_UP`) simultaneously.
+ * - Cards that are excluded (`EXCLUDED`) cannot change state unless explicitly shuffled.
+ * - The game checks for matches when exactly two cards are face-up, applying appropriate transitions:
+ *   - If the cards match, they are marked as excluded (`EXCLUDED`).
+ *   - If the cards do not match, they are flipped back to face-down (`FACE_DOWN`).
  */
 public class Controller extends JLabel implements Serializable, PropertyChangeListener, VetoableChangeListener {
     // Properties
     private int matchedPairs; // number of matched pairs during a game
     private Pair pair; // represents the current pair of cards considered
+    private Timer timer;
+    int time = 500; // in milliseconds
 
     // Constructors
     /**
-     * Default constructor, initializes `matchedPairs` at 0
+     * Default constructor.
+     * Initializes the `Controller` and sets up the game state:
+     * - Resets the matched pairs count to 0.
+     * - Configures a timer to delay the match-checking logic by 5 seconds.
      */
     public Controller() {
+        timer = new Timer(time, event -> checkMatch());
+        timer.setRepeats(false);
         this.reset();
     }
 
     // Public Methods
     /**
-     * TODO Add better description
-     * @param evt A PropertyChangeEvent object describing the event source
-     *          and the property that has changed.
+     * Observes property changes in `Card` objects:
+     * - When a card's state changes to `FACE_UP`, it records the card's value in the `pair`.
+     * - If two cards are face-up, calls the `checkMatch` function after 5 milliseconds.
+     *
+     * @param evt A `PropertyChangeEvent` describing the event source and the changed property.
      */
     @Override
     public void propertyChange(PropertyChangeEvent evt) {
+        String propertyName  = evt.getPropertyName();
+        // If a Card has flipped to FACE_UP, then save its value in the pair
+        if(propertyName.equals("state") &&
+                (CardState)evt.getNewValue() == CardState.FACE_UP) {
+            Card card = (Card) evt.getSource();
+            pair.addValue(card.getValue());
+            // If the pair is full check if their values matches
+            if(pair.isPairFull()){
+                // Calls checkMatch after half a second
+                timer.start();
+            }
+        }
 
-//        String propertyName  = evt.getPropertyName();
-//        if(propertyName.equals("state") &&
-//                (CardState)evt.getNewValue() == CardState.FACE_UP) {
-//            // Sets the new value to the pair (TODO FIND MORE ELEGANT SOLUTION)
-//            CardState state = (CardState) evt.getNewValue();
-//            OLDCard c = (OLDCard)evt.getSource();
-//            pair.addValue(c.getValue());
-//            // If the pair is full check if their values matches
-//            if(pair.isPairFull()){
-//                checkMatch();
-//            }
-//        } else if(propertyName.equals("reset")){
+//        else if(propertyName.equals("reset")){
 //            this.reset();
 //        }
     }
 
     /**
-     * The Controller forbids cards to change their state if they are FACE_UP
-     * and have been clicked again (so they cannot turn FACE_DOWN)
-     * @param evt a {@code PropertyChangeEvent} object describing the
-     *                event source and the property that has changed.
-     * @throws PropertyVetoException
+     * Vetoes invalid state changes for `Card` objects.
+     * Rules:
+     * - Cards in `EXCLUDED` state cannot change state unless explicitly shuffled.
+     * - Cards in `FACE_UP` state cannot change state if the pair is not yet resolved.
+     * - A `FACE_DOWN` card cannot flip to `FACE_UP` if two cards are already face-up.
+     *
+     * @param evt A `PropertyChangeEvent` describing the attempted state transition.
+     * @throws PropertyVetoException if the attempted state change violates game rules.
      */
     @Override
     public void vetoableChange(PropertyChangeEvent evt) throws PropertyVetoException {
-        System.out.println("Inside vetoableChange with command " + evt.getPropertyName());
         String property = evt.getPropertyName();
 
         switch (property) {
@@ -75,7 +88,6 @@ public class Controller extends JLabel implements Serializable, PropertyChangeLi
             case "state":
                 CardState oldState = (CardState) evt.getOldValue();
                 CardState newState = (CardState) evt.getNewValue();
-                System.out.println("Inside state case with oldValue " + oldState + " and newValue " + newState);
 
                 // A Card cannot change its state if its EXCLUDED
                 if(oldState == CardState.EXCLUDED) {
@@ -90,27 +102,19 @@ public class Controller extends JLabel implements Serializable, PropertyChangeLi
                 else if (newState == CardState.FACE_UP && pair.isPairFull()) {
                     throw new PropertyVetoException("There are already two Cards in the state FACE_UP", evt);
                 }
-                // If there are no problem we get the card's value
-                else {
-                    Card card = (Card) evt.getSource();
-                    pair.addValue(card.getValue());
-                }
                 break;
         }
     }
 
     // Private Methods
-
     /**
-     * TODO ADD BETTER DESCRIPTION
+     * Checks if the two face-up cards match.
+     * - If the cards match, their state changes to `EXCLUDED`.
+     * - If the cards do not match, their state reverts to `FACE_DOWN`.
+     * The pair is then reset for the next round.
      */
     private void checkMatch() {
         CardState newState = CardState.FACE_DOWN;
-
-        // Wait for Half a Second
-        try{
-            Thread.sleep(500);
-        } catch (InterruptedException e) { /*TODO*/ }
 
         // Check if the pair match
         if(pair.areEqual()) {
@@ -126,8 +130,8 @@ public class Controller extends JLabel implements Serializable, PropertyChangeLi
     }
 
     /**
-     * Set the new Value and change the value displayed
-     * @param newVal = the new value
+     * Updates the count of matched pairs and displays the updated value on the JLabel.
+     * @param newVal The new matched pairs count.
      */
     private void setMatchedPairs(int newVal) {
         this.matchedPairs = newVal;
@@ -135,7 +139,9 @@ public class Controller extends JLabel implements Serializable, PropertyChangeLi
     }
 
     /**
-     * Resets the class
+     * Resets the game state to its initial configuration:
+     * - Sets the matched pairs count to 0.
+     * - Clears the current pair being evaluated.
      */
     private void reset() {
         // Set property

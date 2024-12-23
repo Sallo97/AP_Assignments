@@ -43,6 +43,7 @@ public class CardTable extends JPanel{
             Card card = new Card();
             card.addVetoableChangeListener(controller);
             card.addPropertyChangeListener(controller);
+            controller.addPropertyChangeListener(card);
             deck.add(card);
             add(card);
         }

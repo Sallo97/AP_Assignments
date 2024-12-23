@@ -1,7 +1,10 @@
 package sicily.sallo.assignment1_matching_pair_game.logic_components.card;
 
 import javax.swing.*;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.beans.PropertyVetoException;
+import java.io.Serializable;
 import java.util.Objects;
 
 /**
@@ -18,7 +21,7 @@ import java.util.Objects;
  *
  * @author Salvatore Salerno
  */
-public class Card extends JButton {
+public class Card extends JButton implements Serializable, PropertyChangeListener {
     // Properties
     private int value = 0; // (bound + constrained)
     private CardState state; // (bound + constrained)
@@ -120,10 +123,10 @@ public class Card extends JButton {
         }
 
         // Set Text
-        if (Objects.requireNonNull(state) == CardState.FACE_UP) {
+        if (state == CardState.FACE_UP || state == CardState.EXCLUDED) {
             this.setText(String.valueOf(this.value));
         } else {
-            // Both EXCLUDED and FACE_DOWN have the value hidden
+            // Only FACE_DOWN has the value hidden
             this.setText("?");
         }
     }
@@ -142,5 +145,20 @@ public class Card extends JButton {
             newState = CardState.FACE_DOWN;
         }
         this.setState(newState);
+    }
+
+    @Override
+    public void propertyChange(PropertyChangeEvent evt) {
+        switch (evt.getPropertyName()) {
+            case "state":
+                // Check if the Card is FACE_UP, if so change its state according to the event
+                if(this.state == CardState.FACE_UP){
+                    this.setState((CardState)evt.getNewValue());
+                }
+                break;
+            case "value":
+                // TODO
+                break;
+        }
     }
 }
