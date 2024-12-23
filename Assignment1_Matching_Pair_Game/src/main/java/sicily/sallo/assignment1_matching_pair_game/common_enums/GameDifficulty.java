@@ -37,4 +37,8 @@ public enum GameDifficulty {
     public int getNumOfPairs(){
         return numOfPairs;
     }
+
+    public int getNumOfCards(){
+        return numOfPairs * 2;
+    }
 }
