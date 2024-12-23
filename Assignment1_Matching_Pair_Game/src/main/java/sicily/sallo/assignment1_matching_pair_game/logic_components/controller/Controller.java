@@ -118,7 +118,7 @@ public class Controller extends JLabel implements Serializable, PropertyChangeLi
 
         // Check if the pair match
         if(pair.areEqual()) {
-            this.setMatchedPairs(matchedPairs++);
+            this.setMatchedPairs(matchedPairs + 1);
             newState = CardState.EXCLUDED;
         }
 
@@ -135,6 +135,7 @@ public class Controller extends JLabel implements Serializable, PropertyChangeLi
      */
     private void setMatchedPairs(int newVal) {
         this.matchedPairs = newVal;
+        System.out.println("matchetPairs = " + matchedPairs);
         this.setText("PAIRS FOUND = " + this.matchedPairs);
     }
 

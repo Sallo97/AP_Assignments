@@ -24,7 +24,6 @@ public class Counter extends JLabel implements Serializable, PropertyChangeListe
     }
 
     // Public Methods
-
     /**
      * Listens for property change events and increments the counter
      * whenever the "state" property of a card changes to FACE_UP.
@@ -38,7 +37,7 @@ public class Counter extends JLabel implements Serializable, PropertyChangeListe
         String propertyName  = evt.getPropertyName();
         if (propertyName.equals("state") &&
                 evt.getNewValue() == CardState.FACE_UP) {
-            setCounter(this.totFlips++);
+            setCounter(this.totFlips + 1);
         } else if(propertyName.equals("reset")){
             this.reset();
         }
@@ -46,7 +45,6 @@ public class Counter extends JLabel implements Serializable, PropertyChangeListe
 
 
     // Private Methods
-
     /**
      * Updates the counter value and refreshes the text displayed on the JLabel.
      *
@@ -54,7 +52,7 @@ public class Counter extends JLabel implements Serializable, PropertyChangeListe
      */
     private void setCounter(int newVal) {
         totFlips = newVal;
-        setText("Counter:" + totFlips);
+        setText("COUNTER = " + totFlips);
     }
 
     /**

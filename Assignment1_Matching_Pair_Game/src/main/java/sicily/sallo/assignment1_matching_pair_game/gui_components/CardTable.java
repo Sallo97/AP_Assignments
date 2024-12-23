@@ -3,6 +3,7 @@ package sicily.sallo.assignment1_matching_pair_game.gui_components;
 import sicily.sallo.assignment1_matching_pair_game.common_enums.GameDifficulty;
 import sicily.sallo.assignment1_matching_pair_game.logic_components.card.Card;
 import sicily.sallo.assignment1_matching_pair_game.logic_components.controller.Controller;
+import sicily.sallo.assignment1_matching_pair_game.logic_components.counter.Counter;
 
 import javax.swing.*;
 import java.awt.*;
@@ -24,8 +25,8 @@ public class CardTable extends JPanel{
      * Default constructor that initializes the table with the default
      * number of cards (`maxCards`).
      */
-    public CardTable(Controller controller){
-        update(controller, nCards);
+    public CardTable(Controller controller, Counter counter){
+        update(controller, counter, nCards);
     }
 
     // Private methods
@@ -33,7 +34,7 @@ public class CardTable extends JPanel{
      * Updates the table showing the requested number of cards.
      * @param newCards The new number of cards to display on the table.
      */
-    public void update(Controller controller, int newCards){
+    public void update(Controller controller, Counter counter, int newCards){
         this.nCards = newCards;
         deck.ensureCapacity(nCards);
 
@@ -43,6 +44,7 @@ public class CardTable extends JPanel{
             Card card = new Card();
             card.addVetoableChangeListener(controller);
             card.addPropertyChangeListener(controller);
+            card.addPropertyChangeListener(counter);
             controller.addPropertyChangeListener(card);
             deck.add(card);
             add(card);
@@ -65,8 +67,8 @@ public class CardTable extends JPanel{
      * @param newCards The new number of cards to display.
      * @param newVal An array of integers representing the values for each card.
      */
-    public void update(Controller controller,int newCards, int[] newVal){
-        update(controller, newCards);
+    public void update(Controller controller, Counter counter, int newCards, int[] newVal){
+        update(controller, counter, newCards);
 
         // Set values of the cards
         for (int i = 0; i < newCards; i++) {
