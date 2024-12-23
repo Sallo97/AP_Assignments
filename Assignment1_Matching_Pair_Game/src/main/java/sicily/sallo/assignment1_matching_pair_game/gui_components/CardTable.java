@@ -2,6 +2,7 @@ package sicily.sallo.assignment1_matching_pair_game.gui_components;
 
 import sicily.sallo.assignment1_matching_pair_game.common_enums.GameDifficulty;
 import sicily.sallo.assignment1_matching_pair_game.logic_components.card.Card;
+import sicily.sallo.assignment1_matching_pair_game.logic_components.card.OLDCard;
 
 import javax.swing.*;
 import java.awt.*;
@@ -14,7 +15,7 @@ import java.util.ArrayList;
 public class CardTable extends JPanel{
     // Properties
     static final int maxCards = GameDifficulty.HARD.getNumOfCards();
-    ArrayList<JButton> deck = new ArrayList<>();
+    ArrayList<Card> deck = new ArrayList<>();
     GameDifficulty difficulty;
     int nCards = maxCards;
 
@@ -40,8 +41,8 @@ public class CardTable extends JPanel{
         System.out.println(deck.size());
         // Add missing buttons if there are fewer than newCards
         for (int i = deck.size(); i < newCards; i++) {
-            JButton button = new JButton("CULO");
-            deck.add(button);
+            Card card = new Card();
+            deck.add(card);
         }
 
         // Remove excess buttons if there are more than newCards
