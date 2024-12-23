@@ -3,13 +3,23 @@ package sicily.sallo.assignment1_matching_pair_game.logic_components.card;
 import sicily.sallo.assignment1_matching_pair_game.common_enums.GameDifficulty;
 
 import javax.swing.*;
-import javax.swing.border.LineBorder;
-import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.beans.PropertyVetoException;
 import java.util.Objects;
 
+/**
+ * Represents a card in the game. It is implemented as an extension of JButton.
+ * Key Features:
+ * - The card's appearance dynamically updates based on its state, including
+ *   background color and displayed text.
+ * - Supports property change listeners (`PropertyChangeSupport`) to notify
+ *   observers when the card's value or state changes.
+ * - Includes vetoable change listeners (`VetoableChangeSupport`) to enforce
+ *   validation or constraints before allowing state or value modifications.
+ * Additionally, the card has a default size (`width` and `height`) to ensure
+ * consistent presentation in the game interface.
+ *
+ * @author Salvatore Salerno
+ */
 public class Card extends JButton {
     // Properties
     private int value = 0; // (bound + constrained)
@@ -50,6 +60,9 @@ public class Card extends JButton {
     }
 
     // Public Methods
+
+
+
     /**
      * @return the value of the card.
      */
@@ -88,11 +101,18 @@ public class Card extends JButton {
             this.changeAppearance();
             this.firePropertyChange("state", oldState, newState);
         } catch(PropertyVetoException e){
-            //TODO
+            System.err.println("Cannot change state!");
         }
     }
 
     // Private Methods
+    /**
+     * Updates the card's appearance based on its current state.
+     * Adjusts the background color and the text displayed on the card.
+     * Depending on the state of the card does the following:
+     * - `FACE_UP` -> the card's numeric value is displayed as text.
+     * - `FACE_DOWN` or `EXCLUDED` -> the text is hidden (displayed as "?").
+     */
     private void changeAppearance() {
         // Set Background Color
         this.setBackground(state.getColor());

@@ -2,40 +2,46 @@ package sicily.sallo.assignment1_matching_pair_game.gui_components;
 
 import sicily.sallo.assignment1_matching_pair_game.common_enums.GameDifficulty;
 import sicily.sallo.assignment1_matching_pair_game.logic_components.card.Card;
-import sicily.sallo.assignment1_matching_pair_game.logic_components.card.OLDCard;
 
 import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
 
 /**
- * TODO ADD BETTER DESCRIPTION
- * Represents a Panel of n cards
+ * CardTable is a JPanel that represents a table of playing cards for a game.
+ * It dynamically manages the layout and the number of cards displayed based on
+ * the game's current difficulty setting.
  */
 public class CardTable extends JPanel{
     // Properties
     static final int maxCards = GameDifficulty.HARD.getNumOfCards();
-    ArrayList<Card> deck = new ArrayList<>();
-    GameDifficulty difficulty;
     int nCards = maxCards;
+    ArrayList<Card> deck = new ArrayList<>();
 
-    /**
-     * TODO Add better description
-     * Creates an array of 32 Cards (usually the maximum)
-     */
-    public CardTable(){
-        update(maxCards);
-    }
     // Constructors
     /**
-     * TODO Add better description
+     * Default constructor that initializes the table with the default
+     * number of cards (`maxCards`).
+     */
+    public CardTable(){
+        update(nCards);
+    }
+
+    /**
+     * Constructor that creates a table with a specified number
+     * of cards.
+     * @param nCards The number of cards to display.
      */
     public CardTable(int nCards){
+        this.nCards = nCards;
         update(nCards);
-
     }
 
     // Private methods
+    /**
+     * Updates the table showing the requested number of cards.
+     * @param newCards The new number of cards to display on the table.
+     */
     public void update(int newCards){
         this.nCards = newCards;
         deck.ensureCapacity(nCards);
@@ -58,6 +64,12 @@ public class CardTable extends JPanel{
         setLayout();
     }
 
+    /**
+     * Updates the table to show the specified number of cards.
+     * Additionally, sets the values of each card according to the array `newVal`.
+     * @param newCards The new number of cards to display.
+     * @param newVal An array of integers representing the values for each card.
+     */
     public void update(int newCards, int[] newVal){
         update(newCards);
 
@@ -67,6 +79,10 @@ public class CardTable extends JPanel{
         }
     }
 
+    /**
+     * Sets the layout of the CardTable based on the current number of cards.
+     * The cards are arranged in a grid with a dynamic number of rows and columns.
+     */
     private void setLayout(){
         // Get the number of rows and columns
         int rows = Math.min(nCards/4, 4);
