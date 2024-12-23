@@ -1,7 +1,5 @@
 package sicily.sallo.assignment1_matching_pair_game.logic_components.card;
 
-import sicily.sallo.assignment1_matching_pair_game.common_enums.GameDifficulty;
-
 import javax.swing.*;
 import java.beans.PropertyVetoException;
 import java.util.Objects;
@@ -60,9 +58,6 @@ public class Card extends JButton {
     }
 
     // Public Methods
-
-
-
     /**
      * @return the value of the card.
      */

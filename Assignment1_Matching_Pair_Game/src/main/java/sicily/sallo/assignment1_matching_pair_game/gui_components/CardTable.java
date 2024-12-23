@@ -2,6 +2,7 @@ package sicily.sallo.assignment1_matching_pair_game.gui_components;
 
 import sicily.sallo.assignment1_matching_pair_game.common_enums.GameDifficulty;
 import sicily.sallo.assignment1_matching_pair_game.logic_components.card.Card;
+import sicily.sallo.assignment1_matching_pair_game.logic_components.controller.Controller;
 
 import javax.swing.*;
 import java.awt.*;
@@ -23,18 +24,8 @@ public class CardTable extends JPanel{
      * Default constructor that initializes the table with the default
      * number of cards (`maxCards`).
      */
-    public CardTable(){
-        update(nCards);
-    }
-
-    /**
-     * Constructor that creates a table with a specified number
-     * of cards.
-     * @param nCards The number of cards to display.
-     */
-    public CardTable(int nCards){
-        this.nCards = nCards;
-        update(nCards);
+    public CardTable(Controller controller){
+        update(controller, nCards);
     }
 
     // Private methods
@@ -42,13 +33,16 @@ public class CardTable extends JPanel{
      * Updates the table showing the requested number of cards.
      * @param newCards The new number of cards to display on the table.
      */
-    public void update(int newCards){
+    public void update(Controller controller, int newCards){
         this.nCards = newCards;
         deck.ensureCapacity(nCards);
 
         // Add missing buttons
         for (int i = deck.size(); i < newCards; i++) {
+            //TODO Let Controller be a Listener to all cards
             Card card = new Card();
+            card.addVetoableChangeListener(controller);
+            card.addPropertyChangeListener(controller);
             deck.add(card);
             add(card);
         }
@@ -70,8 +64,8 @@ public class CardTable extends JPanel{
      * @param newCards The new number of cards to display.
      * @param newVal An array of integers representing the values for each card.
      */
-    public void update(int newCards, int[] newVal){
-        update(newCards);
+    public void update(Controller controller,int newCards, int[] newVal){
+        update(controller, newCards);
 
         // Set values of the cards
         for (int i = 0; i < newCards; i++) {

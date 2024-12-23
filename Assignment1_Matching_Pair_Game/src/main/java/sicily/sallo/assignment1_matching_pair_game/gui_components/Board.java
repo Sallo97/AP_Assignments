@@ -1,16 +1,11 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
- */
 package sicily.sallo.assignment1_matching_pair_game.gui_components;
-import sicily.sallo.assignment1_matching_pair_game.logic_components.buttons.*;
+import sicily.sallo.assignment1_matching_pair_game.logic_components.controller.Controller;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.Serializable;
-import java.util.Arrays;
 import java.util.Random;
 
 /**
@@ -22,7 +17,8 @@ public class Board extends JFrame implements Serializable, ActionListener {
     JLabel gameTitle = new JLabel("MEMORY MATCHING GAME", SwingConstants.CENTER);
     DifficultyChooser difficultyChooser = new DifficultyChooser();
     CommandButtons commandButtons = new CommandButtons();
-    CardTable cardTable = new CardTable();
+    Controller controller = new Controller();
+    CardTable cardTable = new CardTable(controller);
 
     // Constructors
     /**
@@ -47,18 +43,15 @@ public class Board extends JFrame implements Serializable, ActionListener {
     /**
      * @param args the command line arguments
      */
-    public static void main(String args[]) {
+    public static void main(String[] args) {
 
         /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new Board().setVisible(true);
-            }
-        });
+        java.awt.EventQueue.invokeLater(() -> new Board().setVisible(true));
     }
 
     /**
-     * TODO Add better description
+     * SHUFFLE Button Clicked -> Start the game
+     * EXIT Button Clicked -> Exit the game
      */
     @Override
     public void actionPerformed(ActionEvent e) {
@@ -76,6 +69,9 @@ public class Board extends JFrame implements Serializable, ActionListener {
 
     // Private Methods
 
+    /**
+     * Start the game following the inputted settings
+     */
     private void startGame() {
         // Get the n of cards
         int numOfPairs = difficultyChooser.gameDifficulty().getNumOfPairs();
@@ -83,14 +79,15 @@ public class Board extends JFrame implements Serializable, ActionListener {
 
         // Create the values of n cards
         int[] values = randomDeck(numOfPairs, numOfCards);
-        cardTable.update(numOfCards, values);
+        cardTable.update(controller, numOfCards, values);
+
 
         // Set the board accordingly
         setGameLayout();
     }
 
     /**
-     * TODO Add better description
+     * Sets the layout for the main menu
      */
     private void setMenuLayout() {
         //this.remove(cardTable);
@@ -100,7 +97,7 @@ public class Board extends JFrame implements Serializable, ActionListener {
     }
 
     /**
-     * TODO Add better description
+     * Sets the layout for the Game board
      */
     private void setGameLayout(){
         this.remove(gameTitle);
