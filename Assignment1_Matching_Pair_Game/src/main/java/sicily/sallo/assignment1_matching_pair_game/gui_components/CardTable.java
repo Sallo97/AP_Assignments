@@ -19,7 +19,10 @@ public class CardTable extends JPanel{
     GameDifficulty difficulty;
     int nCards = maxCards;
 
-    //TODO Base constructor adds 32Cards
+    /**
+     * TODO Add better description
+     * Creates an array of 32 Cards (usually the maximum)
+     */
     public CardTable(){
         update(maxCards);
     }
@@ -33,33 +36,38 @@ public class CardTable extends JPanel{
     }
 
     // Private methods
-
     public void update(int newCards){
         this.nCards = newCards;
         deck.ensureCapacity(nCards);
 
-        System.out.println(deck.size());
-        // Add missing buttons if there are fewer than newCards
+        // Add missing buttons
         for (int i = deck.size(); i < newCards; i++) {
             Card card = new Card();
             deck.add(card);
+            add(card);
         }
 
-        // Remove excess buttons if there are more than newCards
+        // Remove excess buttons
         while (deck.size() > newCards) {
-            deck.remove(deck.size() - 1);
+            Card card = deck.get(deck.size() - 1);
+            remove(card);
+            deck.remove(card);
         }
 
+        // Set Layout
         setLayout();
     }
 
-    private void setLayout(){
-        // set the exact number of buttons
-        this.removeAll();
-        for (int i = 0; i < nCards; i++){
-            add(deck.get(i));
-        }
+    public void update(int newCards, int[] newVal){
+        update(newCards);
 
+        // Set values of the cards
+        for (int i = 0; i < newCards; i++) {
+            deck.get(i).setValue(newVal[i]);
+        }
+    }
+
+    private void setLayout(){
         // Get the number of rows and columns
         int rows = Math.min(nCards/4, 4);
         int cols = (int) Math.ceil((double) nCards / rows);
@@ -69,6 +77,4 @@ public class CardTable extends JPanel{
         this.revalidate();
         this.repaint();
     }
-
-
 }

@@ -1,29 +1,100 @@
 package sicily.sallo.assignment1_matching_pair_game.logic_components.card;
 
+import sicily.sallo.assignment1_matching_pair_game.common_enums.GameDifficulty;
+
 import javax.swing.*;
 import javax.swing.border.LineBorder;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.beans.PropertyVetoException;
 import java.util.Objects;
 
 public class Card extends JButton {
     // Properties
-    private int value;
-    private CardState state;
+    private int value = 0; // (bound + constrained)
+    private CardState state; // (bound + constrained)
 
     // Constructors
-
+    /**
+     * Default constructor for creating a new Card instance.
+     * This constructor is primarily defined to support the Serializable interface.
+     * The card is initialized in the FACE_DOWN state, its appearance is updated,
+     * and a mouse click event listener is attached to handle user interactions.
+     */
     public Card() {
-        super();
-        this.value = 0;
+        // At the start a Card is always FACE_DOWN
         this.state = CardState.FACE_DOWN;
-        this.setText("CULO");
-        getState();
 
+        // Set Mouse Event when clicked
+        this.addActionListener(e -> cardClicked());
+
+        // Set graphic of the card
+        changeAppearance();
     }
 
-    private void getState() {
+    /**
+     * Creates a new Card instance with the specified value and game difficulty.
+     * The card is initially set to the FACE_DOWN state and its appearance is updated accordingly.
+     * The size of the card is dynamically adjusted based on the provided game difficulty.
+     * Additionally, a mouse click event listener is attached to handle user interactions.
+     *
+     * @param value      the numeric value assigned to the card
+     */
+    public Card(int value) {
+        // Call default constructor
+        this();
 
-        // Set Color
+        // set `value` accordingly
+        this.value = value;
+    }
+
+    // Public Methods
+    /**
+     * @return the value of the card.
+     */
+    public int getValue() {
+        return value;
+    }
+
+    /**
+     * Updates the card's value to the specified new value, provided all registered
+     * vetoable change listeners approve the change.
+     *
+     * @param newVal: the new value to set for the card.
+     *
+     */
+    public void setValue(int newVal) {
+        int oldVal = value;
+        try{
+            this.fireVetoableChange("value", oldVal, newVal);
+            value = newVal;
+            this.firePropertyChange("value", oldVal, newVal);
+        } catch (PropertyVetoException e) { /*TODO*/}
+    }
+
+    /**
+     * Updates the card's state to the specified new state, modifying its
+     * background color accordingly. The change is subject to approval by all
+     * registered vetoable listeners.
+     *
+     * @param newState: the new state to set for the card.
+     */
+    public void setState(CardState newState)  {
+        CardState oldState = state;
+        try{
+            this.fireVetoableChange("state", oldState, newState);
+            state = newState;
+            this.changeAppearance();
+            this.firePropertyChange("state", oldState, newState);
+        } catch(PropertyVetoException e){
+            //TODO
+        }
+    }
+
+    // Private Methods
+    private void changeAppearance() {
+        // Set Background Color
         this.setBackground(state.getColor());
         this.setOpaque(true);
         this.setContentAreaFilled(true);
@@ -40,5 +111,21 @@ public class Card extends JButton {
             // Both EXCLUDED and FACE_DOWN have the value hidden
             this.setText("?");
         }
+    }
+
+    /**
+     * Handles the logic triggered when the card is clicked by the user.
+     * Depending on the state of the card does the following:
+     * - `FACE_DOWN` -> attempts to change its state to `FACE_UP`.
+     * - `FACE_UP` or `EXCLUDED` -> it  attempts to change its state to `FACE_DOWN`.
+     */
+    private void cardClicked() {
+        CardState newState;
+        if (Objects.requireNonNull(state) == CardState.FACE_DOWN) {
+            newState = CardState.FACE_UP;
+        } else {
+            newState = CardState.FACE_DOWN;
+        }
+        this.setState(newState);
     }
 }

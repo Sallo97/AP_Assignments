@@ -10,6 +10,7 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.Serializable;
+import java.util.Arrays;
 import java.util.Random;
 
 /**
@@ -76,15 +77,15 @@ public class Board extends JFrame implements Serializable, ActionListener {
     // Private Methods
 
     private void startGame() {
-
         // Get the n of cards
         int numOfPairs = difficultyChooser.gameDifficulty().getNumOfPairs();
         int numOfCards = difficultyChooser.gameDifficulty().getNumOfCards();
 
         // Create the values of n cards
         int[] values = randomDeck(numOfPairs, numOfCards);
-        cardTable.update(numOfCards);
+        cardTable.update(numOfCards, values);
 
+        // Set the board accordingly
         setGameLayout();
     }
 
@@ -110,23 +111,30 @@ public class Board extends JFrame implements Serializable, ActionListener {
     }
 
     /**
-     * TODO Add better description
-     * random sampling of a deck of n pairs
-     * @param nPairs
-     * @return
+     * Generates a random sequence of numOfCards elems
+     * s.t. each value in [1, nPairs] occurs exactly
+     * two times in the sequence.
+     * @param nPairs number of pairs in the game
+     * @param numOfCards number of cards in total
+     *
+     * @return the sequence as an array of integers
      */
     private int[] randomDeck(int nPairs, int numOfCards) {
         int[] deck = new int[numOfCards];
-        // Construct the random Deck
+
+        // Construct the base array
+        for (int i = 0; i < nPairs; i++) {
+            int pos = i * 2;
+            deck[pos+1] = deck[pos] = i + 1;
+        }
+
+        // Generate the random sequence
         Random rand = new Random();
         for (int i = 0; i < numOfCards; i++) {
-            // Get a random position
-            int j = rand.nextInt(0, nPairs);
-            // Get the logical value associated
-            int iVal = i/2 + 1;
-            int jVal = j/2 + 1;
-            deck[i] = iVal;
-            deck[j] = jVal;
+            int j = rand.nextInt(i, numOfCards);
+            int temp = deck[j];
+            deck[j] = deck[i];
+            deck[i] = temp;
         }
         return deck;
     }
