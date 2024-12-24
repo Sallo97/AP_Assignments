@@ -1,39 +1,53 @@
 package sicily.sallo.assignment1_matching_pair_game.gui_components;
 
+import sicily.sallo.assignment1_matching_pair_game.common_enums.GameState;
+
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionListener;
 
 public class ExitPopUp extends JDialog{
     // Properties
+    private String exitText = "ARE YOU SURE YOU WANT TO EXIT?";
+    private String backText = "GO BACK TO THE MAIN MENU?";
+    JButton yesButton = new JButton("YES");
+    JButton noButton = new JButton("NO");
+    JLabel textLabel = new JLabel();
 
     // Constructors
-    public ExitPopUp(JFrame parent) {
-        // Create a custom dialog
-        JDialog dialog = new JDialog(parent, "QUIT GAME", true); // `true` makes it modal
-        dialog.setSize(250, 100);
-        dialog.setResizable(false);
-        dialog.setLayout(new FlowLayout());
-
-        JLabel label = new JLabel("ARE YOU SURE YOU WANT TO EXIT?");
-        JButton yesButton = new JButton("YES");
-        JButton noButton = new JButton("NO");
+    public ExitPopUp(JFrame parent, GameState state) {
+        // Set common
+        super(parent, "QUIT GAME", true);
+        this.setSize(250, 100);
+        this.setResizable(false);
+        this.setLayout(new FlowLayout());
 
 
-        // Add an ActionListener to close the dialog
-        yesButton.addActionListener(event -> dialog.getOwner().dispose());
-        noButton.addActionListener(event -> dialog.dispose());
+        noButton.addActionListener(event -> this.dispose());
+        yesButton.addActionListener((ActionListener) parent);
 
-        dialog.add(label);
-        dialog.add(yesButton);
-        dialog.add(noButton);
+        this.add(textLabel);
+        this.add(yesButton);
+        this.add(noButton);
 
         // Center the dialog relative to the parent frame
-        dialog.setLocationRelativeTo(parent);
-        dialog.setVisible(true);
+        this.setLocationRelativeTo(parent);
+
+        update(state);
     }
 
     // Public Methods
+    public void update(GameState state){
+        if (state == GameState.MENU_SELECTION){
+            textLabel.setText(exitText);
+            yesButton.setActionCommand("exitApp");
+        } else {
+            textLabel.setText(backText);
+            yesButton.setActionCommand("backToMenu");
+        }
 
+        this.setVisible(true);
+    }
 
 }
 

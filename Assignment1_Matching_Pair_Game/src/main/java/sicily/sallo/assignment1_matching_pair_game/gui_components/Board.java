@@ -59,12 +59,8 @@ public class Board extends JFrame implements Serializable, ActionListener {
         String command = e.getActionCommand();
         switch (command) {
             case "exit":
-                if (currentState == GameState.MENU_SELECTION) {
-                    // Ask the player if he wants to exit the game (Show a popup Windows using a JOptionPanel)
-                    new ExitPopUp(this);
-                } else {
-                    // TODO Ask the player if wants to go back to the main menu
-                }
+                // Ask the player if he wants to exit the game
+                new ExitPopUp(this, currentState);
                 break;
 
             case "shuffle":
@@ -76,7 +72,14 @@ public class Board extends JFrame implements Serializable, ActionListener {
                     // TODO Start restart procedure
                 }
                 break;
+            case "exitApp":
+                this.dispose();
+                break;
 
+            case "backToMenu":
+                //TODO STILL TO DO
+                System.err.println("backToMenu");
+                break;
         }
 
     }
