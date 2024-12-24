@@ -20,6 +20,7 @@ public class Board extends JFrame implements Serializable, ActionListener {
     CommandButtons commandButtons = new CommandButtons();
     CardTable cardTable = new CardTable();
     GameState currentState = GameState.MENU_SELECTION;
+    ExitPopUp exitPopUp;
 
     // Constructors
     /**
@@ -38,6 +39,8 @@ public class Board extends JFrame implements Serializable, ActionListener {
         this.setSize(600, 400);
         this.setLayout(new BorderLayout());
         setMenuLayout();
+
+        exitPopUp = new ExitPopUp(this);
     }
 
     // Public Methods
@@ -60,7 +63,7 @@ public class Board extends JFrame implements Serializable, ActionListener {
         switch (command) {
             case "exit":
                 // Ask the player if he wants to exit the game
-                new ExitPopUp(this, currentState);
+                exitPopUp.update(this, currentState);
                 break;
 
             case "shuffle":

@@ -15,7 +15,7 @@ public class ExitPopUp extends JDialog{
     JLabel textLabel = new JLabel();
 
     // Constructors
-    public ExitPopUp(JFrame parent, GameState state) {
+    public ExitPopUp(JFrame parent) {
         // Set common
         super(parent, "QUIT GAME", true);
         this.setSize(250, 100);
@@ -23,21 +23,23 @@ public class ExitPopUp extends JDialog{
         this.setLayout(new FlowLayout());
 
 
-        noButton.addActionListener(event -> this.dispose());
+        noButton.addActionListener(event -> this.setVisible(false));
         yesButton.addActionListener((ActionListener) parent);
+        yesButton.addActionListener(event -> this.setVisible(false));
 
         this.add(textLabel);
         this.add(yesButton);
         this.add(noButton);
 
         // Center the dialog relative to the parent frame
-        this.setLocationRelativeTo(parent);
+        this.setVisible(false);
 
-        update(state);
     }
 
     // Public Methods
-    public void update(GameState state){
+    public void update(JFrame parent, GameState state){
+        this.setLocationRelativeTo(parent);
+
         if (state == GameState.MENU_SELECTION){
             textLabel.setText(exitText);
             yesButton.setActionCommand("exitApp");
