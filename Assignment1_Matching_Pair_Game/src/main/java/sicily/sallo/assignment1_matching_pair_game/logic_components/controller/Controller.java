@@ -1,10 +1,12 @@
 package sicily.sallo.assignment1_matching_pair_game.logic_components.controller;
 
+import sicily.sallo.assignment1_matching_pair_game.common_enums.GameState;
 import sicily.sallo.assignment1_matching_pair_game.logic_components.card.Card;
 import sicily.sallo.assignment1_matching_pair_game.logic_components.card.CardState;
 import javax.swing.*;
 import java.beans.*;
 import java.io.Serializable;
+import java.util.ArrayList;
 
 /**
  * The `Controller` class manages the core game logic for a game.
@@ -17,10 +19,13 @@ import java.io.Serializable;
  */
 public class Controller extends JLabel implements Serializable, PropertyChangeListener, VetoableChangeListener {
     // Properties
-    private int matchedPairs; // number of matched pairs during a game
+    private ArrayList<Integer> matchedPairs =  new ArrayList<>(); // number of matched pairs during a game
+    private int numPlayers = 1;
+    private int currentPlayer = 0;
     private Pair pair; // represents the current pair of cards considered
     private Timer timer;
     int time = 500; // in milliseconds
+    GameState gameState = GameState.IN_GAME;
 
     // Constructors
     /**
@@ -30,7 +35,7 @@ public class Controller extends JLabel implements Serializable, PropertyChangeLi
      * - Configures a timer to delay the match-checking logic by 5 seconds.
      */
     public Controller() {
-        timer = new Timer(time, event -> checkMatch());
+        timer = new Timer(time, e -> checkMatch());
         timer.setRepeats(false);
         this.reset();
     }
@@ -57,10 +62,14 @@ public class Controller extends JLabel implements Serializable, PropertyChangeLi
                 timer.start();
             }
         }
+        else if(propertyName.equals("board")){
+            this.gameState = (GameState) evt.getNewValue();
+            this.reset();
+        }
+        else if(propertyName.equals("numOfPlayer")){
+            this.numPlayers = (Integer) evt.getNewValue();
+        }
 
-//        else if(propertyName.equals("reset")){
-//            this.reset();
-//        }
     }
 
     /**
@@ -84,18 +93,20 @@ public class Controller extends JLabel implements Serializable, PropertyChangeLi
                 CardState oldState = (CardState) evt.getOldValue();
                 CardState newState = (CardState) evt.getNewValue();
 
-                // A Card cannot change its state if its EXCLUDED
-                if(oldState == CardState.EXCLUDED) {
-                    throw new PropertyVetoException("An EXCLUDED Card cannot change its state", evt);
-                }
-                // A Card cannot change its state if its FACE_UP and the Pair is *NOT* NONE
-                else if (oldState == CardState.FACE_UP && !pair.isPairNone()) {
-                    throw new PropertyVetoException("Only when the pair as been checked the card con change its state", evt);
-                }
-                // If a card with state FACE_DOWN want to become FACE_UP but there are already to cards
-                // FACE_UP it cannot change its state
-                else if (newState == CardState.FACE_UP && pair.isPairFull()) {
-                    throw new PropertyVetoException("There are already two Cards in the state FACE_UP", evt);
+                if(gameState == GameState.IN_GAME) {
+                    // A Card cannot change its state if its EXCLUDED
+                    if(oldState == CardState.EXCLUDED) {
+                        throw new PropertyVetoException("An EXCLUDED Card cannot change its state", evt);
+                    }
+                    // A Card cannot change its state if its FACE_UP and the Pair is *NOT* NONE
+                    else if (oldState == CardState.FACE_UP && !pair.isPairNone()) {
+                        throw new PropertyVetoException("Only when the pair as been checked the card con change its state", evt);
+                    }
+                    // If a card with state FACE_DOWN want to become FACE_UP but there are already to cards
+                    // FACE_UP it cannot change its state
+                    else if (newState == CardState.FACE_UP && pair.isPairFull()) {
+                        throw new PropertyVetoException("There are already two Cards in the state FACE_UP", evt);
+                    }
                 }
                 break;
         }
@@ -113,8 +124,10 @@ public class Controller extends JLabel implements Serializable, PropertyChangeLi
 
         // Check if the pair match
         if(pair.areEqual()) {
-            this.setMatchedPairs(matchedPairs + 1);
+            // Update current player score
+            matchedPairs.set(currentPlayer, matchedPairs.get(currentPlayer) + 1);
             newState = CardState.EXCLUDED;
+            setText();
         }
 
         // Reset the pair
@@ -122,16 +135,19 @@ public class Controller extends JLabel implements Serializable, PropertyChangeLi
 
         // Set state of the cards to newState
         this.firePropertyChange("state", CardState.FACE_UP, newState);
+
+        // Set next player
+        setNextPlayer();
     }
 
     /**
-     * Updates the count of matched pairs and displays the updated value on the JLabel.
-     * @param newVal The new matched pairs count.
+     * Update the players turn and shows its score
      */
-    private void setMatchedPairs(int newVal) {
-        this.matchedPairs = newVal;
-        this.setText("PAIRS FOUND = " + this.matchedPairs);
+    private void setNextPlayer(){
+        currentPlayer = (currentPlayer + 1) % numPlayers;
+        setText();
     }
+
 
     /**
      * Resets the game state to its initial configuration:
@@ -139,9 +155,25 @@ public class Controller extends JLabel implements Serializable, PropertyChangeLi
      * - Clears the current pair being evaluated.
      */
     private void reset() {
-        // Set property
-        this.setMatchedPairs(0);
+        // Initialize elements
+        int oldSize = matchedPairs.size();
+        for (int i = matchedPairs.size(); i < numPlayers; i++){
+            matchedPairs.add(i, 0);
+        }
+
+        // Set the score of all remaining players to 0
+        for (int i = 0; i < numPlayers - oldSize; i++) {
+            matchedPairs.set(i, 0);
+        }
+
+        // Set current player to 0
+        currentPlayer = 0;
         pair = new Pair();
+        setText();
+    }
+
+    private void setText() {
+        this.setText("PLAYER'S "+ (currentPlayer + 1) + " TURN | PAIRS FOUND:" + matchedPairs.get(currentPlayer));
     }
 
 }

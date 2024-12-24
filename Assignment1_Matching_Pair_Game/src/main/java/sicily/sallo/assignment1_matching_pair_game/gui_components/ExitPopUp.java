@@ -22,10 +22,10 @@ public class ExitPopUp extends JDialog{
         this.setResizable(false);
         this.setLayout(new FlowLayout());
 
-
         noButton.addActionListener(event -> this.setVisible(false));
         yesButton.addActionListener((ActionListener) parent);
         yesButton.addActionListener(event -> this.setVisible(false));
+        yesButton.setActionCommand("popupExit");
 
         this.add(textLabel);
         this.add(yesButton);
@@ -42,10 +42,8 @@ public class ExitPopUp extends JDialog{
 
         if (state == GameState.MENU_SELECTION){
             textLabel.setText(exitText);
-            yesButton.setActionCommand("exitApp");
         } else {
             textLabel.setText(backText);
-            yesButton.setActionCommand("backToMenu");
         }
 
         this.setVisible(true);

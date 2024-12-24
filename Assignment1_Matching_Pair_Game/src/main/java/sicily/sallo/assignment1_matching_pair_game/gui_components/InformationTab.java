@@ -12,7 +12,6 @@ public class InformationTab extends JPanel {
     // Properties
     public Controller controller = new Controller();
     public Counter counter = new Counter();
-
     // Constructor
     public InformationTab() {
         // Set Layout

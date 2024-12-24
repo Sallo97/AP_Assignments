@@ -2,6 +2,7 @@ package sicily.sallo.assignment1_matching_pair_game.gui_components;
 
 import sicily.sallo.assignment1_matching_pair_game.common_enums.GameDifficulty;
 import sicily.sallo.assignment1_matching_pair_game.logic_components.card.Card;
+import sicily.sallo.assignment1_matching_pair_game.logic_components.card.CardState;
 import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
@@ -71,6 +72,7 @@ public class CardTable extends JPanel{
 
         // Set values of the cards
         for (int i = 0; i < newCards; i++) {
+            deck.get(i).setState(CardState.FACE_DOWN);
             deck.get(i).setValue(newVal[i]);
         }
     }

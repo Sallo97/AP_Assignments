@@ -36,11 +36,11 @@ public class DifficultyChooser extends JPanel {
         easyButton.setSelected(true);
         easyButton.addActionListener(this::setButton);
 
-        mediumButton = new javax.swing.JRadioButton();
+        mediumButton = new JRadioButton();
         mediumButton.setText(mediumString);
         mediumButton.addActionListener(this::setButton);
 
-        hardButton = new javax.swing.JRadioButton();
+        hardButton = new JRadioButton();
         hardButton.setText(hardString);
         hardButton.addActionListener(this::setButton);
 

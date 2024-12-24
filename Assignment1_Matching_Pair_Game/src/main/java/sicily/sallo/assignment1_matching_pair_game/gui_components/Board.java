@@ -21,6 +21,7 @@ public class Board extends JFrame implements Serializable, ActionListener {
     CardTable cardTable = new CardTable();
     GameState currentState = GameState.MENU_SELECTION;
     ExitPopUp exitPopUp;
+    PlayerSelector playerSelector = new PlayerSelector();
 
     // Constructors
     /**
@@ -34,10 +35,15 @@ public class Board extends JFrame implements Serializable, ActionListener {
         // Become Listener of Shuffle and Exit Button
         commandButtons.exitButton.addActionListener(this);
         commandButtons.shuffleButton.addActionListener(this);
+        commandButtons.shuffleButton.addActionListener((ActionListener) cardTable.infoTab.counter);
+
+        // Let controller be a listener of you
+        this.addPropertyChangeListener(cardTable.infoTab.controller);
+        this.addPropertyChangeListener(cardTable.infoTab.counter);
 
         // Setting layout
         this.setSize(600, 400);
-        this.setLayout(new BorderLayout());
+        this.setLayout(new BoxLayout(this.getContentPane(), BoxLayout.Y_AXIS));
         setMenuLayout();
 
         exitPopUp = new ExitPopUp(this);
@@ -54,6 +60,16 @@ public class Board extends JFrame implements Serializable, ActionListener {
     }
 
     /**
+     * TODO ADD Better description
+     * Change the state and tell Controller about it
+     */
+    public void setState(GameState newState){
+        GameState oldState = this.currentState;
+        this.currentState = newState;
+        firePropertyChange("board", oldState, newState);
+    }
+
+    /**
      * SHUFFLE Button Clicked -> Start the game
      * EXIT Button Clicked -> Exit the game
      */
@@ -67,21 +83,16 @@ public class Board extends JFrame implements Serializable, ActionListener {
                 break;
 
             case "shuffle":
+                startGame();
+                break;
+
+            case "popupExit":
                 if (currentState == GameState.MENU_SELECTION) {
-                    startGame();
+                    this.dispose();
                 } else {
-                    // TODO Ask the player if he wants to restart
-
-                    // TODO Start restart procedure
+                    setState(GameState.MENU_SELECTION);
+                    setMenuLayout();
                 }
-                break;
-            case "exitApp":
-                this.dispose();
-                break;
-
-            case "backToMenu":
-                //TODO STILL TO DO
-                System.err.println("backToMenu");
                 break;
         }
 
@@ -92,10 +103,11 @@ public class Board extends JFrame implements Serializable, ActionListener {
      * Start the game following the inputted settings
      */
     private void startGame() {
-        System.out.println("Starting game");
+        // Set the state to MENU
+        setState(GameState.MENU_SELECTION);
 
-        // Set the state to IN_GAME
-        currentState = GameState.IN_GAME;
+        // Set the number of Players
+        firePropertyChange("numOfPlayer", null, playerSelector.getNumOfPlayers());
 
         // Get the n of cards
         int numOfPairs = difficultyChooser.gameDifficulty().getNumOfPairs();
@@ -107,16 +119,23 @@ public class Board extends JFrame implements Serializable, ActionListener {
 
         // Set the board accordingly
         setGameLayout();
+
+        // Set the state to INGAME
+        setState(GameState.IN_GAME);
     }
 
     /**
      * Sets the layout for the main menu
      */
     private void setMenuLayout() {
-        //this.remove(cardTable);
+        this.remove(cardTable);
+        this.remove(commandButtons);
         add(gameTitle, BorderLayout.NORTH);
-        add(difficultyChooser, BorderLayout.CENTER);
+        add(difficultyChooser);
+        add(playerSelector);
         add(commandButtons, BorderLayout.SOUTH);
+        this.revalidate();
+        this.repaint();
     }
 
     /**
@@ -125,7 +144,10 @@ public class Board extends JFrame implements Serializable, ActionListener {
     private void setGameLayout(){
         this.remove(gameTitle);
         this.remove(difficultyChooser);
-        this.add(cardTable, BorderLayout.CENTER);
+        this.remove(playerSelector);
+        this.remove(commandButtons);
+        this.add(cardTable);
+        this.add(commandButtons);
 
         this.revalidate();
         this.repaint();
