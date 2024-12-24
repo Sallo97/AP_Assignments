@@ -48,7 +48,7 @@ public class Controller extends JLabel implements Serializable, PropertyChangeLi
         String propertyName  = evt.getPropertyName();
         // If a Card has flipped to FACE_UP, then save its value in the pair
         if(propertyName.equals("state") &&
-                (CardState)evt.getNewValue() == CardState.FACE_UP) {
+                evt.getNewValue() == CardState.FACE_UP) {
             Card card = (Card) evt.getSource();
             pair.addValue(card.getValue());
             // If the pair is full check if their values matches
@@ -68,7 +68,7 @@ public class Controller extends JLabel implements Serializable, PropertyChangeLi
      * Rules:
      * - Cards in `EXCLUDED` state cannot change state unless explicitly shuffled.
      * - Cards in `FACE_UP` state cannot change state if the pair is not yet resolved.
-     * - A `FACE_DOWN` card cannot flip to `FACE_UP` if two cards are already face-up.
+     * - Cards in`FACE_DOWN` state cannot flip to `FACE_UP` if two cards are already face-up.
      *
      * @param evt A `PropertyChangeEvent` describing the attempted state transition.
      * @throws PropertyVetoException if the attempted state change violates game rules.

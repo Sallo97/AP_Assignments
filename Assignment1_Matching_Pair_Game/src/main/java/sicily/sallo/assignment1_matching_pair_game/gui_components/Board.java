@@ -1,5 +1,7 @@
 package sicily.sallo.assignment1_matching_pair_game.gui_components;
 
+import sicily.sallo.assignment1_matching_pair_game.common_enums.GameState;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -17,6 +19,7 @@ public class Board extends JFrame implements Serializable, ActionListener {
     DifficultyChooser difficultyChooser = new DifficultyChooser();
     CommandButtons commandButtons = new CommandButtons();
     CardTable cardTable = new CardTable();
+    GameState currentState = GameState.MENU_SELECTION;
 
     // Constructors
     /**
@@ -56,11 +59,24 @@ public class Board extends JFrame implements Serializable, ActionListener {
         String command = e.getActionCommand();
         switch (command) {
             case "exit":
-                dispose();
+                if (currentState == GameState.MENU_SELECTION) {
+                    // Ask the player if he wants to exit the game (Show a popup Windows using a JOptionPanel)
+                    new ExitPopUp(this);
+                } else {
+                    // TODO Ask the player if wants to go back to the main menu
+                }
                 break;
+
             case "shuffle":
-                startGame();
+                if (currentState == GameState.MENU_SELECTION) {
+                    startGame();
+                } else {
+                    // TODO Ask the player if he wants to restart
+
+                    // TODO Start restart procedure
+                }
                 break;
+
         }
 
     }
@@ -70,6 +86,11 @@ public class Board extends JFrame implements Serializable, ActionListener {
      * Start the game following the inputted settings
      */
     private void startGame() {
+        System.out.println("Starting game");
+
+        // Set the state to IN_GAME
+        currentState = GameState.IN_GAME;
+
         // Get the n of cards
         int numOfPairs = difficultyChooser.gameDifficulty().getNumOfPairs();
         int numOfCards = difficultyChooser.gameDifficulty().getNumOfCards();
