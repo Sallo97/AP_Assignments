@@ -23,8 +23,8 @@ public class Controller extends JLabel implements Serializable, PropertyChangeLi
     private int numPlayers = 1;
     private int currentPlayer = 0;
     private Pair pair; // represents the current pair of cards considered
-    private Timer timer;
-    private Timer timer2;
+    private final Timer matchTimer;
+    private final Timer nextPlayerTimer;
     int time = 500; // in milliseconds
     GameState gameState = GameState.IN_GAME;
 
@@ -36,11 +36,11 @@ public class Controller extends JLabel implements Serializable, PropertyChangeLi
      * - Configures a timer to delay the match-checking logic by 5 seconds.
      */
     public Controller() {
-        timer = new Timer(time, e -> checkMatch());
-        timer.setRepeats(false);
+        matchTimer = new Timer(time, e -> checkMatch());
+        matchTimer.setRepeats(false);
 
-        timer2 = new Timer(time, e -> setNextPlayer());
-        timer2.setRepeats(false);
+        nextPlayerTimer = new Timer(time, e -> setNextPlayer());
+        nextPlayerTimer.setRepeats(false);
 
         this.reset();
     }
@@ -64,7 +64,7 @@ public class Controller extends JLabel implements Serializable, PropertyChangeLi
             // If the pair is full check if their values matches
             if(pair.isPairFull()){
                 // Calls checkMatch after half a second
-                timer.start();
+                matchTimer.start();
                 //checkMatch();
             }
         }
@@ -143,7 +143,7 @@ public class Controller extends JLabel implements Serializable, PropertyChangeLi
         this.firePropertyChange("state", CardState.FACE_UP, newState);
 
         // Set next player
-        timer2.start();
+        nextPlayerTimer.start();
     }
 
     /**
@@ -162,14 +162,12 @@ public class Controller extends JLabel implements Serializable, PropertyChangeLi
      */
     private void reset() {
         // Initialize elements
-        int oldSize = matchedPairs.size();
-        for (int i = matchedPairs.size(); i < numPlayers; i++){
-            matchedPairs.add(i, 0);
-        }
-
-        // Set the score of all remaining players to 0
-        for (int i = 0; i < numPlayers - oldSize; i++) {
-            matchedPairs.set(i, 0);
+        for (int i = 0; i < numPlayers; i++) {
+            if (i >= matchedPairs.size()) {
+                matchedPairs.add(0); // Add a new score of 0 for players not yet in the list
+            } else {
+                matchedPairs.set(i, 0); // Set the score to 0 for existing players
+            }
         }
 
         // Set current player to 0

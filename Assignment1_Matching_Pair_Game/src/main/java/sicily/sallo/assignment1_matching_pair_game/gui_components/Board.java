@@ -35,7 +35,7 @@ public class Board extends JFrame implements Serializable, ActionListener {
         // Become Listener of Shuffle and Exit Button
         commandButtons.exitButton.addActionListener(this);
         commandButtons.shuffleButton.addActionListener(this);
-        commandButtons.shuffleButton.addActionListener((ActionListener) cardTable.infoTab.counter);
+        commandButtons.shuffleButton.addActionListener(cardTable.infoTab.counter);
 
         // Let controller be a listener of you
         this.addPropertyChangeListener(cardTable.infoTab.controller);

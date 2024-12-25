@@ -82,14 +82,12 @@ public class Counter extends JLabel implements Serializable, ActionListener, Pro
      */
     private void reset() {
         // Initialize elements
-        int oldSize = playerFlips.size();
-        for (int i = playerFlips.size(); i < numOfPlayers; i++){
-            playerFlips.add(i, 0);
-        }
-
-        // Set the score to 0 for all remaining players
-        for (int i = 0; i < numOfPlayers - oldSize; i++) {
-            playerFlips.set(i, 0);
+        for (int i = 0; i < numOfPlayers; i++) {
+            if (i >= playerFlips.size()) {
+                playerFlips.add(0); // Add a new score of 0 for players not yet in the list
+            } else {
+                playerFlips.set(i, 0); // Set the score to 0 for existing players
+            }
         }
 
         // Set current player to 0

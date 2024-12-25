@@ -12,6 +12,7 @@ public class CommandButtons extends JPanel{
     // Properties
     public JButton shuffleButton = new JButton("SHUFFLE");
     public JButton exitButton = new JButton("EXIT");
+    public JButton highScoreButton = new JButton("HIGH-SCORE");
 
     // Constructors
     /**
@@ -23,11 +24,12 @@ public class CommandButtons extends JPanel{
         setLayout(new FlowLayout(FlowLayout.CENTER, 10, 10)); // Centered with spacing
         this.add(shuffleButton);
         this.add(exitButton);
+        this.add(highScoreButton);
 
         // Set action commands
         shuffleButton.setActionCommand("shuffle");
         exitButton.setActionCommand("exit");
-
+        highScoreButton.setActionCommand("highScore");
 
     }
 }
