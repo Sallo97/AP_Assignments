@@ -1,7 +1,6 @@
 package sicily.sallo.assignment1_matching_pair_game.logic_components.counter;
 
 import sicily.sallo.assignment1_matching_pair_game.logic_components.card.CardState;
-import sicily.sallo.assignment1_matching_pair_game.logic_components.controller.Pair;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
@@ -80,6 +79,9 @@ public class Counter extends JLabel implements Serializable, ActionListener, Pro
                 // Search the winner(s) according to the minimum number of moves
                 ArrayList<Integer> winner = (ArrayList<Integer>) evt.getNewValue();
                 getWinner((ArrayList<Integer>) evt.getNewValue());
+
+            case "moves":
+                firePropertyChange("moves", null, moves);
         }
     }
 

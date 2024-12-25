@@ -23,7 +23,7 @@ public class Board extends JFrame implements Serializable, ActionListener {
     ExitPopUp exitPopUp;
     PlayerSelector playerSelector = new PlayerSelector();
     ScoreBoard scoreBoard = new ScoreBoard();
-    JLabel highScoreTitle = new JLabel("HIGH-SCORES", SwingConstants.CENTER);
+    JLabel highScoreTitle = new JLabel("BEST 10 PLAYERS", SwingConstants.CENTER);
 
     // Constructors
     /**
@@ -44,7 +44,9 @@ public class Board extends JFrame implements Serializable, ActionListener {
         this.addPropertyChangeListener(cardTable.infoTab.controller);
         this.addPropertyChangeListener(cardTable.infoTab.counter);
         cardTable.infoTab.controller.addPropertyChangeListener(cardTable.infoTab.counter);
+        cardTable.infoTab.controller.addPropertyChangeListener(scoreBoard);
         cardTable.infoTab.counter.addPropertyChangeListener(cardTable.infoTab.controller);
+
 
         // Setting layout
         this.setSize(600, 400);

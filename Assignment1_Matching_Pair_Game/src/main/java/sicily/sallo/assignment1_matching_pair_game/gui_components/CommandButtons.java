@@ -12,7 +12,7 @@ public class CommandButtons extends JPanel{
     // Properties
     public JButton shuffleButton = new JButton("SHUFFLE");
     public JButton exitButton = new JButton("EXIT");
-    public JButton highScoreButton = new JButton("HIGH-SCORE");
+    public JButton highScoreButton = new JButton("HIGH SCORE");
 
     // Constructors
     /**

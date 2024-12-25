@@ -9,6 +9,7 @@ import javax.swing.*;
 import java.beans.*;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Optional;
 
 /**
  * The `Controller` class manages the core game logic for a game.
@@ -97,6 +98,10 @@ public class Controller extends JLabel implements Serializable, PropertyChangeLi
                     }
                 }
                 printWinner(result.toString());
+                break;
+
+            case "moves":
+                endingGame((ArrayList<Integer>) evt.getNewValue());
         }
     }
 
@@ -169,8 +174,18 @@ public class Controller extends JLabel implements Serializable, PropertyChangeLi
             // Set next player
             nextPlayerTimer.start();
         } else {
-            // Winner logic
-            findWinner();
+            firePropertyChange("moves", null, null);
+        }
+    }
+
+    private void endingGame(ArrayList<Integer> moves){
+
+        // Winner logic
+        findWinner();
+
+        // For each player get its score and moves and pass it to ScoreBoard
+        for (int i = 0; i < numPlayers; i++) {
+            firePropertyChange("rank",moves.get(i) , scores.get(i));
         }
     }
 
