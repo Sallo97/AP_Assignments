@@ -85,6 +85,17 @@ public class Controller extends JLabel implements Serializable, PropertyChangeLi
             case "numOfPlayer":
                 this.numPlayers = (Integer) evt.getNewValue();
                 break;
+
+            case "winner":
+                ArrayList<Integer> winners = (ArrayList<Integer>) evt.getNewValue();
+                StringBuilder result = new StringBuilder();
+                for (int i = 0; i < winners.size(); i++) {
+                    result.append(winners.get(i));
+                    if (i < winners.size() - 1) { // Add a space unless it's the last element
+                        result.append(" ");
+                    }
+                }
+                printWinner(result.toString());
         }
     }
 
@@ -157,42 +168,47 @@ public class Controller extends JLabel implements Serializable, PropertyChangeLi
             // Set next player
             nextPlayerTimer.start();
         } else {
-            // TODO Winner logic
-            printWinner();
+            // Winner logic
+            findWinner();
         }
     }
 
     /**
      * TODO Print Winner
      */
-    private void printWinner() {
+    private void findWinner() {
         // Find the player(s) with the maximum score
+        ArrayList<Integer> winners = new ArrayList<>();
         int max = this.scores.get(0);
-        ArrayList<Integer> indices = new ArrayList<>();
 
         for (int i = 0; i < this.scores.size(); i++) {
             int current = scores.get(i);
             if (current > max) {
                 max = current; // Update max value
-                indices.clear(); // Clear previous indices
-                indices.add(i); // Add the current index
+                winners.clear(); // Clear previous indices
+                winners.add(i); // Add the current index
             } else if (current == max) {
-                indices.add(i); // Add the index of the duplicate max value
+                winners.add(i); // Add the index of the duplicate max value
             }
         }
-
 
         // Tell Counter that the game ended
         firePropertyChange("ended", null, null);
 
-        // Only one Winner
-        if (indices.size() != 1){
+        if (winners.size() > 1){
             // If there is a TIE call Counter to get who has the minimum number of moves
-            firePropertyChange("findWinner", null, indices);
+            firePropertyChange("findWinner", null, winners);
+        } else {
+            // Print the Winner (The Winner is the one at position 0 in indices)
+            this.setText("PLAYER " + (winners.get(0) + 1) + " WON! | ");
         }
+    }
 
-        // Print the Winner (The Winner is the one at position 0 in indices)
-        this.setText("PLAYER " + (indices.get(0) + 1) + " WON! | ");
+    /**
+     * TODO Add Better description
+     */
+    private void printWinner(String winnerName){
+        this.setText("PLAYER(s) " + winnerName + " WON! | ");
     }
 
     /**

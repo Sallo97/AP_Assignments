@@ -17,7 +17,7 @@ import java.util.ArrayList;
  */
 public class Counter extends JLabel implements Serializable, ActionListener, PropertyChangeListener {
     // Properties
-    private final ArrayList<Integer> playerFlips = new ArrayList<>(); // Total number of flips done
+    private final ArrayList<Integer> moves = new ArrayList<>(); // Total number of flips done
     private int numOfPlayers = 1;
     private int currentPlayer = 0;
     private int turn = 0;
@@ -50,7 +50,7 @@ public class Counter extends JLabel implements Serializable, ActionListener, Pro
         switch (propertyName) {
             case "state":
                 if (evt.getNewValue() == CardState.FACE_UP) {
-                    playerFlips.set(currentPlayer, playerFlips.get(currentPlayer) + 1);
+                    moves.set(currentPlayer, moves.get(currentPlayer) + 1);
                     if (turn == 1) {
                         setText();
                         timerNextPlayer.start();
@@ -74,10 +74,39 @@ public class Counter extends JLabel implements Serializable, ActionListener, Pro
             case "ended":
                 // set Text appropriately
                 end = true;
+                break;
+
+            case "findWinner":
+                ArrayList<Integer> winner = (ArrayList<Integer>) evt.getNewValue();
+                getWinner((ArrayList<Integer>) evt.getNewValue());
         }
     }
 
     // Private Methods
+
+    /**
+     * TODO Add Better Description
+     */
+    private void getWinner(ArrayList<Integer> winners){
+        // Find the winner with minimum moves
+        ArrayList<Integer> bestPlayers = new ArrayList<>();
+        int min = moves.get(winners.get(0));
+
+        for (int i = 1; i < winners.size(); i++) {
+            int current = moves.get(i);
+            if (current < min) {
+                min = current; // Update max value
+                bestPlayers.clear(); // Clear previous indices
+                bestPlayers.add(i); // Add the current index
+            } else if (current == min) {
+                bestPlayers.add(i); // Add the index of the duplicate max value
+            }
+        }
+
+        // Send result to Controller
+        firePropertyChange("winner", null, bestPlayers);
+        
+    }
 
     /**
      * TODO ADD BETTER DESCRIPTION
@@ -93,10 +122,10 @@ public class Counter extends JLabel implements Serializable, ActionListener, Pro
     private void reset() {
         // Initialize elements
         for (int i = 0; i < numOfPlayers; i++) {
-            if (i >= playerFlips.size()) {
-                playerFlips.add(0); // Add a new score of 0 for players not yet in the list
+            if (i >= moves.size()) {
+                moves.add(0); // Add a new score of 0 for players not yet in the list
             } else {
-                playerFlips.set(i, 0); // Set the score to 0 for existing players
+                moves.set(i, 0); // Set the score to 0 for existing players
             }
         }
 
@@ -111,7 +140,7 @@ public class Counter extends JLabel implements Serializable, ActionListener, Pro
         if (end){
             setText("RE-MATCH BY PRESSING SHUFFLE | GO BACK TO MENU BY PRESSING EXIT");
         } else {
-            this.setText("COUNTER = " + playerFlips.get(currentPlayer));
+            this.setText("COUNTER = " + moves.get(currentPlayer));
         }
     }
 
