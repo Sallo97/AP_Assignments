@@ -22,6 +22,8 @@ public class Board extends JFrame implements Serializable, ActionListener {
     GameState currentState = GameState.MENU_SELECTION;
     ExitPopUp exitPopUp;
     PlayerSelector playerSelector = new PlayerSelector();
+    ScoreBoard scoreBoard = new ScoreBoard();
+    JLabel highScoreTitle = new JLabel("HIGH-SCORES", SwingConstants.CENTER);
 
     // Constructors
     /**
@@ -36,6 +38,7 @@ public class Board extends JFrame implements Serializable, ActionListener {
         commandButtons.exitButton.addActionListener(this);
         commandButtons.shuffleButton.addActionListener(this);
         commandButtons.shuffleButton.addActionListener(cardTable.infoTab.counter);
+        commandButtons.highScoreButton.addActionListener(this);
 
         // Let controller be a listener of you
         this.addPropertyChangeListener(cardTable.infoTab.controller);
@@ -89,6 +92,11 @@ public class Board extends JFrame implements Serializable, ActionListener {
                 startGame();
                 break;
 
+            case "highScore":
+                setState(GameState.SCORE_BOARD);
+                setScoreLayout();
+                break;
+
             case "popupExit":
                 if (currentState == GameState.MENU_SELECTION) {
                     this.dispose();
@@ -128,15 +136,41 @@ public class Board extends JFrame implements Serializable, ActionListener {
     }
 
     /**
+     * Removes all custom GUI Components
+     */
+    private void clearLayout(){
+        this.remove(gameTitle);
+        this.remove(difficultyChooser);
+        this.remove(playerSelector);
+        this.remove(commandButtons);
+        this.remove(cardTable);
+        this.remove(scoreBoard);
+        this.remove(highScoreTitle);
+    }
+
+
+    /**
+     * Sets the layout for the HighScore Board
+     */
+    private void setScoreLayout() {
+        clearLayout();
+        this.add(highScoreTitle);
+        this.add(scoreBoard);
+        this.add(commandButtons);
+        this.revalidate();
+        this.repaint();
+    }
+
+    /**
      * Sets the layout for the main menu
      */
     private void setMenuLayout() {
-        this.remove(cardTable);
-        this.remove(commandButtons);
+        clearLayout();
         add(gameTitle, BorderLayout.NORTH);
         add(difficultyChooser);
         add(playerSelector);
         add(commandButtons, BorderLayout.SOUTH);
+
         this.revalidate();
         this.repaint();
     }
@@ -145,10 +179,7 @@ public class Board extends JFrame implements Serializable, ActionListener {
      * Sets the layout for the Game board
      */
     private void setGameLayout(){
-        this.remove(gameTitle);
-        this.remove(difficultyChooser);
-        this.remove(playerSelector);
-        this.remove(commandButtons);
+        clearLayout();
         this.add(cardTable);
         this.add(commandButtons);
 

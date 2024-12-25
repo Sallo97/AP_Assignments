@@ -77,6 +77,7 @@ public class Counter extends JLabel implements Serializable, ActionListener, Pro
                 break;
 
             case "findWinner":
+                // Search the winner(s) according to the minimum number of moves
                 ArrayList<Integer> winner = (ArrayList<Integer>) evt.getNewValue();
                 getWinner((ArrayList<Integer>) evt.getNewValue());
         }
@@ -85,27 +86,30 @@ public class Counter extends JLabel implements Serializable, ActionListener, Pro
     // Private Methods
 
     /**
-     * TODO Add Better Description
+     * Determines the player(s) with the minimum number of moves among those who
+     * achieved the best score.
+     *
+     * @param winnersPairs An ArrayList containing the indices of players who achieved the best score.
+     *                      This list represents candidates for the winner.
      */
-    private void getWinner(ArrayList<Integer> winners){
+    private void getWinner(ArrayList<Integer> winnersPairs){
         // Find the winner with minimum moves
-        ArrayList<Integer> bestPlayers = new ArrayList<>();
-        int min = moves.get(winners.get(0));
+        ArrayList<Integer> winners = new ArrayList<>();
+        int min = moves.get(winnersPairs.get(0));
 
-        for (int i = 1; i < winners.size(); i++) {
+        for (int i = 1; i < winnersPairs.size(); i++) {
             int current = moves.get(i);
             if (current < min) {
-                min = current; // Update max value
-                bestPlayers.clear(); // Clear previous indices
-                bestPlayers.add(i); // Add the current index
+                min = current;
+                winners.clear();
+                winners.add(i);
             } else if (current == min) {
-                bestPlayers.add(i); // Add the index of the duplicate max value
+                winners.add(i);
             }
         }
 
         // Send result to Controller
-        firePropertyChange("winner", null, bestPlayers);
-        
+        firePropertyChange("winner", null, winners);
     }
 
     /**

@@ -2,6 +2,7 @@ package sicily.sallo.assignment1_matching_pair_game.logic_components.controller;
 
 import sicily.sallo.assignment1_matching_pair_game.common_enums.GameDifficulty;
 import sicily.sallo.assignment1_matching_pair_game.common_enums.GameState;
+import sicily.sallo.assignment1_matching_pair_game.gui_components.ScoreBoard;
 import sicily.sallo.assignment1_matching_pair_game.logic_components.card.Card;
 import sicily.sallo.assignment1_matching_pair_game.logic_components.card.CardState;
 import javax.swing.*;
@@ -174,7 +175,10 @@ public class Controller extends JLabel implements Serializable, PropertyChangeLi
     }
 
     /**
-     * TODO Print Winner
+     * Determines the winner of the game based on the scores and (if necessary) the number of moves.
+     * If a single player has the highest score, that player is declared the winner.
+     * In case of a tie, the method finds the player(s) with the minimum number of moves.
+     * Only if we found more than one player with the same maximum score and minimum moves, then it is a tie.
      */
     private void findWinner() {
         // Find the player(s) with the maximum score
@@ -205,7 +209,7 @@ public class Controller extends JLabel implements Serializable, PropertyChangeLi
     }
 
     /**
-     * TODO Add Better description
+     * Update the label's text showing the winner(s)
      */
     private void printWinner(String winnerName){
         this.setText("PLAYER(s) " + winnerName + " WON! | ");
@@ -218,7 +222,6 @@ public class Controller extends JLabel implements Serializable, PropertyChangeLi
         currentPlayer = (currentPlayer + 1) % numPlayers;
         updateText();
     }
-
 
     /**
      * Resets the game state to its initial configuration:
