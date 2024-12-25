@@ -24,6 +24,7 @@ public class Controller extends JLabel implements Serializable, PropertyChangeLi
     private int currentPlayer = 0;
     private Pair pair; // represents the current pair of cards considered
     private Timer timer;
+    private Timer timer2;
     int time = 500; // in milliseconds
     GameState gameState = GameState.IN_GAME;
 
@@ -37,6 +38,10 @@ public class Controller extends JLabel implements Serializable, PropertyChangeLi
     public Controller() {
         timer = new Timer(time, e -> checkMatch());
         timer.setRepeats(false);
+
+        timer2 = new Timer(time, e -> setNextPlayer());
+        timer2.setRepeats(false);
+
         this.reset();
     }
 
@@ -60,6 +65,7 @@ public class Controller extends JLabel implements Serializable, PropertyChangeLi
             if(pair.isPairFull()){
                 // Calls checkMatch after half a second
                 timer.start();
+                //checkMatch();
             }
         }
         else if(propertyName.equals("board")){
@@ -137,7 +143,7 @@ public class Controller extends JLabel implements Serializable, PropertyChangeLi
         this.firePropertyChange("state", CardState.FACE_UP, newState);
 
         // Set next player
-        setNextPlayer();
+        timer2.start();
     }
 
     /**

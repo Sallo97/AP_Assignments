@@ -11,22 +11,28 @@ import java.beans.PropertyChangeListener;
 import java.io.Serializable;
 import java.util.ArrayList;
 
+// TODO ADD A TIMER FOR BOTH COUNTER AND CONTROLLER FOR THE METHOD NextPlayer
+
 /**
  * Display and update the total number of times in a game the cards have been turned
  * face up in a matching pair game.
  */
 public class Counter extends JLabel implements Serializable, ActionListener, PropertyChangeListener {
     // Properties
-    private ArrayList<Integer> playerFlips = new ArrayList<>(); // Total number of flips done
+    private final ArrayList<Integer> playerFlips = new ArrayList<>(); // Total number of flips done
     private int numOfPlayers = 1;
     private int currentPlayer = 0;
     private int turn = 0;
+    private Timer timerNextPlayer;
     // Constructor
     /**
      * Initializes a new Counter instance with the counter set to 0.
      * Displays the counter value on the JLabel.
      */
     public Counter() {
+        timerNextPlayer = new Timer(500, e -> setNextPlayer());
+        timerNextPlayer.setRepeats(false);
+
         this.reset();
     }
 
@@ -46,7 +52,8 @@ public class Counter extends JLabel implements Serializable, ActionListener, Pro
                 evt.getNewValue() == CardState.FACE_UP) {
             playerFlips.set(currentPlayer, playerFlips.get(currentPlayer) + 1);
             if (turn == 1){
-                setNextPlayer();
+                setText();
+                timerNextPlayer.start();
                 turn = 0;
             } else {
                 setText();
