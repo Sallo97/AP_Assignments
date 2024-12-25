@@ -40,6 +40,8 @@ public class Board extends JFrame implements Serializable, ActionListener {
         // Let controller be a listener of you
         this.addPropertyChangeListener(cardTable.infoTab.controller);
         this.addPropertyChangeListener(cardTable.infoTab.counter);
+        cardTable.infoTab.controller.addPropertyChangeListener(cardTable.infoTab.counter);
+        cardTable.infoTab.counter.addPropertyChangeListener(cardTable.infoTab.controller);
 
         // Setting layout
         this.setSize(600, 400);
@@ -67,6 +69,7 @@ public class Board extends JFrame implements Serializable, ActionListener {
         GameState oldState = this.currentState;
         this.currentState = newState;
         firePropertyChange("board", oldState, newState);
+        firePropertyChange("difficulty", null, this.difficultyChooser.gameDifficulty());
     }
 
     /**

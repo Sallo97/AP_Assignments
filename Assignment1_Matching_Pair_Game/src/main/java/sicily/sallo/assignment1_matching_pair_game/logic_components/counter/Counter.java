@@ -11,8 +11,6 @@ import java.beans.PropertyChangeListener;
 import java.io.Serializable;
 import java.util.ArrayList;
 
-// TODO ADD A TIMER FOR BOTH COUNTER AND CONTROLLER FOR THE METHOD NextPlayer
-
 /**
  * Display and update the total number of times in a game the cards have been turned
  * face up in a matching pair game.
@@ -24,6 +22,7 @@ public class Counter extends JLabel implements Serializable, ActionListener, Pro
     private int currentPlayer = 0;
     private int turn = 0;
     private Timer timerNextPlayer;
+    boolean end = false;
     // Constructor
     /**
      * Initializes a new Counter instance with the counter set to 0.
@@ -46,24 +45,35 @@ public class Counter extends JLabel implements Serializable, ActionListener, Pro
      */
     @Override
     public void propertyChange(PropertyChangeEvent evt) {
-        // Check if the property is a state and is FACE_UP
-        String propertyName  = evt.getPropertyName();
-        if (propertyName.equals("state") &&
-                evt.getNewValue() == CardState.FACE_UP) {
-            playerFlips.set(currentPlayer, playerFlips.get(currentPlayer) + 1);
-            if (turn == 1){
-                setText();
-                timerNextPlayer.start();
-                turn = 0;
-            } else {
-                setText();
-                turn++;
-            }
-        } else if(propertyName.equals("reset")){
-            this.reset();
-        } else if (propertyName.equals("numOfPlayer")) {
-            this.numOfPlayers = (Integer) evt.getNewValue();
-            this.reset();
+        String propertyName = evt.getPropertyName();
+
+        switch (propertyName) {
+            case "state":
+                if (evt.getNewValue() == CardState.FACE_UP) {
+                    playerFlips.set(currentPlayer, playerFlips.get(currentPlayer) + 1);
+                    if (turn == 1) {
+                        setText();
+                        timerNextPlayer.start();
+                        turn = 0;
+                    } else {
+                        setText();
+                        turn++;
+                    }
+                }
+                break;
+
+            case "reset":
+                this.reset();
+                break;
+
+            case "numOfPlayer":
+                this.numOfPlayers = (Integer) evt.getNewValue();
+                this.reset();
+                break;
+
+            case "ended":
+                // set Text appropriately
+                end = true;
         }
     }
 
@@ -93,11 +103,16 @@ public class Counter extends JLabel implements Serializable, ActionListener, Pro
         // Set current player to 0
         currentPlayer = 0;
         turn = 0;
+        end = false;
         setText();
     }
 
     private void setText() {
-        this.setText("PLAYER'S " + (currentPlayer + 1) + " TURN | COUNTER = " + playerFlips.get(currentPlayer));
+        if (end){
+            setText("RE-MATCH BY PRESSING SHUFFLE | GO BACK TO MENU BY PRESSING EXIT");
+        } else {
+            this.setText("COUNTER = " + playerFlips.get(currentPlayer));
+        }
     }
 
     @Override
