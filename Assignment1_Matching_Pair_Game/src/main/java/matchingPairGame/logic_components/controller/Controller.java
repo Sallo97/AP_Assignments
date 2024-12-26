@@ -1,15 +1,13 @@
-package sicily.sallo.assignment1_matching_pair_game.logic_components.controller;
+package matchingPairGame.logic_components.controller;
 
-import sicily.sallo.assignment1_matching_pair_game.common_enums.GameDifficulty;
-import sicily.sallo.assignment1_matching_pair_game.common_enums.GameState;
-import sicily.sallo.assignment1_matching_pair_game.gui_components.ScoreBoard;
-import sicily.sallo.assignment1_matching_pair_game.logic_components.card.Card;
-import sicily.sallo.assignment1_matching_pair_game.logic_components.card.CardState;
+import matchingPairGame.logic_components.card.Card;
+import matchingPairGame.common_enums.GameDifficulty;
+import matchingPairGame.common_enums.GameState;
+import matchingPairGame.logic_components.card.CardState;
 import javax.swing.*;
 import java.beans.*;
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Optional;
 
 /**
  * The `Controller` class manages the core game logic for a game.
@@ -174,9 +172,6 @@ public class Controller extends JLabel implements Serializable, PropertyChangeLi
 
     private void endingGame(ArrayList<Integer> moves){
 
-        // Tell the counter the game ended
-        firePropertyChange("ended", null, null);
-
         // Find the Winner of the match
         findWinner(moves);
 
@@ -185,6 +180,9 @@ public class Controller extends JLabel implements Serializable, PropertyChangeLi
             int[] toSend = {i + 1, scores.get(i), moves.get(i)};
             firePropertyChange("rank", null , toSend);
         }
+
+        // Tell the counter the game ended
+        firePropertyChange("ended", null, null);
     }
 
     /**

@@ -1,11 +1,14 @@
-package sicily.sallo.assignment1_matching_pair_game.gui_components;
+package matchingPairGame.gui_components;
 
-import sicily.sallo.assignment1_matching_pair_game.common_enums.GameState;
+import matchingPairGame.common_enums.GameState;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
 import java.io.Serializable;
 import java.util.Random;
 
@@ -22,14 +25,18 @@ public class Board extends JFrame implements Serializable, ActionListener {
     GameState currentState = GameState.MENU_SELECTION;
     ExitPopUp exitPopUp;
     PlayerSelector playerSelector = new PlayerSelector();
-    ScoreBoard scoreBoard = new ScoreBoard();
+    ScoreBoard scoreBoard;
     JLabel highScoreTitle = new JLabel("BEST 10 PLAYERS", SwingConstants.CENTER);
+    transient private String defaultDirectory = "./score.ser";
 
     // Constructors
     /**
      * Creates new form Board
      */
     public Board() {
+        // loading Score
+        loadScore();
+
         // Setting Components
         this.setTitle("Memory Matching Game");
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -45,6 +52,7 @@ public class Board extends JFrame implements Serializable, ActionListener {
         this.addPropertyChangeListener(cardTable.infoTab.counter);
         cardTable.infoTab.controller.addPropertyChangeListener(cardTable.infoTab.counter);
         cardTable.infoTab.controller.addPropertyChangeListener(scoreBoard);
+        this.addPropertyChangeListener(scoreBoard);
         cardTable.infoTab.counter.addPropertyChangeListener(cardTable.infoTab.controller);
 
 
@@ -54,6 +62,22 @@ public class Board extends JFrame implements Serializable, ActionListener {
         setMenuLayout();
 
         exitPopUp = new ExitPopUp(this);
+
+    }
+
+    /**
+     * TODO Add better description
+     * Load score to the disk
+     */
+    private void loadScore(){
+        try{
+            FileInputStream fis = new FileInputStream(defaultDirectory);
+            ObjectInputStream ois = new ObjectInputStream(fis);
+            scoreBoard = (ScoreBoard) ois.readObject();
+
+        } catch (ClassNotFoundException | IOException e) {
+            scoreBoard = new ScoreBoard();
+        }
     }
 
     // Public Methods

@@ -1,4 +1,4 @@
-package sicily.sallo.assignment1_matching_pair_game.common_enums;
+package matchingPairGame.common_enums;
 
 public class Size {
     private int width;

@@ -1,22 +1,24 @@
-package sicily.sallo.assignment1_matching_pair_game.gui_components;
+package matchingPairGame.gui_components;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import java.io.Serializable;
+import java.io.*;
 import java.util.OptionalInt;
 
 public class ScoreBoard extends JTable implements Serializable, PropertyChangeListener {
     // Properties
-    private DefaultTableModel model;
-    int entries = 10;
-    private String defaultName = "AP24/25";
+    transient private DefaultTableModel model;
+    transient int entries = 10;
+    transient private String defaultName = "AP24/25";
+    transient private String defaultDirectory = "./score.ser";
+
 
     String[] names = new String[entries];
     int[] score = new int[entries];
     int[] moves = new int[entries];
-    String[] columnNames = {"RANK", "PLAYER'S NAME", "SCORE", "MOVES"};
+    transient String[] columnNames = {"RANK", "PLAYER'S NAME", "SCORE", "MOVES"};
 
     // Constructors
     public ScoreBoard() {
@@ -67,8 +69,24 @@ public class ScoreBoard extends JTable implements Serializable, PropertyChangeLi
             int score = received[1];
             int moves = received[2];
             updateScore(numPlayer, score, moves);
+        } else if(evt.getPropertyName().equals("ended")){
+            saveScore();
         }
+    }
 
+
+
+    /**
+     * TODO Add better description
+     * Saves score to the disk
+     */
+    private void saveScore() {
+        try{
+            FileOutputStream fos = new FileOutputStream(defaultDirectory);
+            ObjectOutputStream oos = new ObjectOutputStream(fos);
+            oos.writeObject(this);
+            fos.close();
+        }catch(IOException e){ /*TODO*/}
     }
 
     private void updateScore(int numPlayer, int newScore, int newMove){

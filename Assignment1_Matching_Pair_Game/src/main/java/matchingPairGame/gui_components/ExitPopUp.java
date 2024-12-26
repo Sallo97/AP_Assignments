@@ -1,6 +1,6 @@
-package sicily.sallo.assignment1_matching_pair_game.gui_components;
+package matchingPairGame.gui_components;
 
-import sicily.sallo.assignment1_matching_pair_game.common_enums.GameState;
+import matchingPairGame.common_enums.GameState;
 
 import javax.swing.*;
 import java.awt.*;

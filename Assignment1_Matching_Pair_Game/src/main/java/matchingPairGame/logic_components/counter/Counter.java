@@ -1,6 +1,6 @@
-package sicily.sallo.assignment1_matching_pair_game.logic_components.counter;
+package matchingPairGame.logic_components.counter;
 
-import sicily.sallo.assignment1_matching_pair_game.logic_components.card.CardState;
+import matchingPairGame.logic_components.card.CardState;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;

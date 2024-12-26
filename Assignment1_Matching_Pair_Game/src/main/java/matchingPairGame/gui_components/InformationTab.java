@@ -1,7 +1,7 @@
-package sicily.sallo.assignment1_matching_pair_game.gui_components;
+package matchingPairGame.gui_components;
 
-import sicily.sallo.assignment1_matching_pair_game.logic_components.controller.Controller;
-import sicily.sallo.assignment1_matching_pair_game.logic_components.counter.Counter;
+import matchingPairGame.logic_components.controller.Controller;
+import matchingPairGame.logic_components.counter.Counter;
 import javax.swing.*;
 import java.awt.*;
 

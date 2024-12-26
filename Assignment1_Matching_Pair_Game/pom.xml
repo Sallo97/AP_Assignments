@@ -8,6 +8,6 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.release>17</maven.compiler.release>
-        <exec.mainClass>sicily.sallo.assignment1_matching_pair_game.Assignment1_Matching_Pair_Game</exec.mainClass>
+        <exec.mainClass>matchingPairGame.Assignment1_Matching_Pair_Game</exec.mainClass>
     </properties>
 </project>

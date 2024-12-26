@@ -1,4 +1,4 @@
-package sicily.sallo.assignment1_matching_pair_game.common_enums;
+package matchingPairGame.common_enums;
 
 /**
  * Defines the various difficulty setting of a Game, which amounts to the number of cards diplayed,

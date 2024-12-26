@@ -1,6 +1,4 @@
-package sicily.sallo.assignment1_matching_pair_game.gui_components;
-
-import sicily.sallo.assignment1_matching_pair_game.common_enums.GameDifficulty;
+package matchingPairGame.gui_components;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;

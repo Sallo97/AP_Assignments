@@ -1,4 +1,4 @@
-package sicily.sallo.assignment1_matching_pair_game.logic_components.card;
+package matchingPairGame.logic_components.card;
 
 import javax.swing.*;
 import java.beans.PropertyChangeEvent;

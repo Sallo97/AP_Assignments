@@ -1,8 +1,8 @@
-package sicily.sallo.assignment1_matching_pair_game.gui_components;
+package matchingPairGame.gui_components;
 
-import sicily.sallo.assignment1_matching_pair_game.common_enums.GameDifficulty;
-import sicily.sallo.assignment1_matching_pair_game.logic_components.card.Card;
-import sicily.sallo.assignment1_matching_pair_game.logic_components.card.CardState;
+import matchingPairGame.logic_components.card.Card;
+import matchingPairGame.common_enums.GameDifficulty;
+import matchingPairGame.logic_components.card.CardState;
 import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;

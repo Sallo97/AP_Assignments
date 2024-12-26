@@ -1,4 +1,4 @@
-package sicily.sallo.assignment1_matching_pair_game.logic_components.controller;
+package matchingPairGame.logic_components.controller;
 
 import java.util.OptionalInt;
 
