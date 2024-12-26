@@ -1,5 +1,6 @@
 package matchingPairGame.gui_components;
 
+import matchingPairGame.logic_components.challenge.Challenge;
 import matchingPairGame.logic_components.controller.Controller;
 import matchingPairGame.logic_components.counter.Counter;
 import javax.swing.*;
@@ -12,6 +13,7 @@ public class InformationTab extends JPanel {
     // Properties
     public Controller controller = new Controller();
     public Counter counter = new Counter();
+    public Challenge challenge = new Challenge();
 
     // Constructor
     public InformationTab() {
@@ -19,5 +21,6 @@ public class InformationTab extends JPanel {
         setLayout(new FlowLayout(FlowLayout.LEFT, 0, 10)); // Centered with spacing
         this.add(controller);
         this.add(counter);
+        this.add(challenge);
     }
 }

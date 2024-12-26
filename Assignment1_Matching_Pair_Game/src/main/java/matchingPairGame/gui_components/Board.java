@@ -1,6 +1,7 @@
 package matchingPairGame.gui_components;
 
 import matchingPairGame.common_enums.GameState;
+import matchingPairGame.logic_components.challenge.Challenge;
 
 import javax.swing.*;
 import java.awt.*;
@@ -47,11 +48,15 @@ public class Board extends JFrame implements Serializable, ActionListener {
         commandButtons.shuffleButton.addActionListener(cardTable.infoTab.counter);
         commandButtons.highScoreButton.addActionListener(this);
 
+
         // Let controller be a listener of you
+        this.addPropertyChangeListener(cardTable.infoTab.challenge);
         this.addPropertyChangeListener(cardTable.infoTab.controller);
         this.addPropertyChangeListener(cardTable.infoTab.counter);
         cardTable.infoTab.controller.addPropertyChangeListener(cardTable.infoTab.counter);
         cardTable.infoTab.controller.addPropertyChangeListener(scoreBoard);
+        cardTable.infoTab.controller.addPropertyChangeListener(cardTable.infoTab.challenge);
+
         this.addPropertyChangeListener(scoreBoard);
         cardTable.infoTab.counter.addPropertyChangeListener(cardTable.infoTab.controller);
 
@@ -149,6 +154,7 @@ public class Board extends JFrame implements Serializable, ActionListener {
 
         // Get the n of cards
         int numOfPairs = difficultyChooser.gameDifficulty().getNumOfPairs();
+
         int numOfCards = difficultyChooser.gameDifficulty().getNumOfCards();
 
         // Create the values of n cards
@@ -158,7 +164,7 @@ public class Board extends JFrame implements Serializable, ActionListener {
         // Set the board accordingly
         setGameLayout();
 
-        // Set the state to INGAME
+        // Set the state to IN-GAME
         setState(GameState.IN_GAME);
     }
 

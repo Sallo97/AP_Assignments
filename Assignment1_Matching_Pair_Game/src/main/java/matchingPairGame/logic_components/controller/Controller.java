@@ -177,10 +177,12 @@ public class Controller extends JLabel implements Serializable, PropertyChangeLi
             firePropertyChange("rank", null , toSend);
         }
 
-        // Tell the counter the game ended
-        firePropertyChange("ended", null, null);
+        // Tell the counter and challenge label that the game ended
+        firePropertyChange("ended", null, moves);
+
         // Find the Winner of the match
         findWinner(moves);
+
     }
 
     /**
