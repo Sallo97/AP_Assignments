@@ -11,6 +11,7 @@ public class ScoreBoard extends JTable implements Serializable, PropertyChangeLi
     // Properties
     private DefaultTableModel model;
     int entries = 10;
+    private String defaultName = "AP24/25";
 
     String[] names = new String[entries];
     int[] score = new int[entries];
@@ -52,7 +53,7 @@ public class ScoreBoard extends JTable implements Serializable, PropertyChangeLi
 
     private void resetArrays(){
         for (int i = 0; i < entries; i++) {
-            names[i] = "DEFAULT";
+            names[i] = defaultName;
             score[i] = 0;
             moves[i] = 0;
         }
@@ -123,6 +124,6 @@ public class ScoreBoard extends JTable implements Serializable, PropertyChangeLi
                 "GOT AN HIGH SCORE",
                 JOptionPane.PLAIN_MESSAGE);
         // Return the entered name, or a default value if canceled
-        return (name != null && !name.trim().isEmpty()) ? name.trim() : "AP24/25";
+        return (name != null && !name.trim().isEmpty()) ? name.trim() : defaultName;
     }
 }
