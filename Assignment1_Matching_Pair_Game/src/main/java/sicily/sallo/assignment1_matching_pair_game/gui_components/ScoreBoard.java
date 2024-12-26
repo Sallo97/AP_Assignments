@@ -32,9 +32,6 @@ public class ScoreBoard extends JTable implements Serializable, PropertyChangeLi
             model.addRow(new Object[]{i+1, names[i], score[i], moves[i]});
         }
 
-        // Set all cells uneditable
-
-
         // Create JTable using the model
         setModel(model);
         setFillsViewportHeight(true);
@@ -64,7 +61,9 @@ public class ScoreBoard extends JTable implements Serializable, PropertyChangeLi
     @Override
     public void propertyChange(PropertyChangeEvent evt) {
         if(evt.getPropertyName().equals("rank")){
-            updateScore((int)evt.getNewValue(), (int)evt.getOldValue());
+            int score = (Integer)evt.getNewValue();
+            int moves = (Integer)evt.getOldValue();
+            updateScore(score, moves);
         }
 
     }
@@ -72,28 +71,37 @@ public class ScoreBoard extends JTable implements Serializable, PropertyChangeLi
     private void updateScore(int newScore, int newMove){
         // Find the index of the Rank to update (if any)
         OptionalInt idx = OptionalInt.empty();
-        for (int i = 1 ; i < entries + 1; i++) {
-            if (newScore > score[i] || newScore == score[i] && newMove == moves[i]) {
+        for (int i = 0 ; i < entries; i++) {
+            if (newScore > score[i] || (newScore == score[i] && newMove < moves[i])) {
                 idx = OptionalInt.of(i);
                 break;
             }
         }
+
         // If the idx exists update it
         if (idx.isEmpty()) { return;}
+        int rowIdx = idx.getAsInt() + 1;
         int oldScore = score[idx.getAsInt()]; int oldMoves = moves[idx.getAsInt()]; String oldName = names[idx.getAsInt()];
         String newName = "CULO";// TODO Get the name by the player
+        moves[idx.getAsInt()] = newMove;
+        names[idx.getAsInt()] = newName;
+        score[idx.getAsInt()] = newScore;
 
-        setValueAt(newName, idx.getAsInt(), 1);
-        setValueAt(newScore, idx.getAsInt(), 2);
-        setValueAt(newMove, idx.getAsInt(), 3);
+        setValueAt(newName, rowIdx, 1);
+        setValueAt(score[idx.getAsInt()], rowIdx, 2);
+        setValueAt(moves[idx.getAsInt()], rowIdx, 3);
 
-        // Update all values below
-        for (int i = idx.getAsInt() + 1; i < entries ; i++) {
-            newName = oldName; newScore = oldScore; newMove = oldMoves;
-            oldName = names[i]; oldScore = score[i]; oldMoves = moves[i];
-            setValueAt(newName, i, 1);
-            setValueAt(newScore, i, 2);
-            setValueAt(newMove, i, 3);
+        int tempScore; int tempMoves; String tempName;
+        // Update the values below
+        for (int i = (idx.getAsInt() + 1) ; i < entries; i++){
+            tempScore = score[i]; tempMoves = moves[i]; tempName = names[i];
+            score[i] = oldScore; moves[i] = oldMoves; names[i] = oldName;
+
+            setValueAt(names[i], i+1, 1);
+            setValueAt(score[i], i+1, 2);
+            setValueAt(moves[i], i+1, 3);
+
+            oldScore = tempScore; oldMoves = tempMoves; oldName = tempName;
         }
     }
 }

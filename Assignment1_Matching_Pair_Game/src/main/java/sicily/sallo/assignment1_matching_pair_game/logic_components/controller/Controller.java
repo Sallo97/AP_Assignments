@@ -180,9 +180,8 @@ public class Controller extends JLabel implements Serializable, PropertyChangeLi
         // Find the Winner of the match
         findWinner(moves);
 
-        // TODO Update Scoreboard
+        // Update Scoreboard
         for (int i = 0; i < numPlayers; i++) {
-            System.out.println(moves.get(i) + " " + scores.get(i));
             firePropertyChange("rank", moves.get(i) , scores.get(i));
         }
     }
@@ -238,7 +237,6 @@ public class Controller extends JLabel implements Serializable, PropertyChangeLi
         }
         setText(result.toString());
     }
-
 
     /**
      * Update the players turn and shows its score
