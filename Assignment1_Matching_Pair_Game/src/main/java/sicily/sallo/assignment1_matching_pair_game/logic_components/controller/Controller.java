@@ -182,7 +182,8 @@ public class Controller extends JLabel implements Serializable, PropertyChangeLi
 
         // Update Scoreboard
         for (int i = 0; i < numPlayers; i++) {
-            firePropertyChange("rank", moves.get(i) , scores.get(i));
+            int[] toSend = {i + 1, scores.get(i), moves.get(i)};
+            firePropertyChange("rank", null , toSend);
         }
     }
 
