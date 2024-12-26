@@ -27,7 +27,7 @@ public class Board extends JFrame implements Serializable, ActionListener {
     PlayerSelector playerSelector = new PlayerSelector();
     ScoreBoard scoreBoard;
     JLabel highScoreTitle = new JLabel("BEST 10 PLAYERS", SwingConstants.CENTER);
-    transient private String defaultDirectory = "./score.ser";
+    private String defaultDirectory = "./score.ser";
 
     // Constructors
     /**
@@ -74,6 +74,7 @@ public class Board extends JFrame implements Serializable, ActionListener {
             FileInputStream fis = new FileInputStream(defaultDirectory);
             ObjectInputStream ois = new ObjectInputStream(fis);
             scoreBoard = (ScoreBoard) ois.readObject();
+            fis.close();
 
         } catch (ClassNotFoundException | IOException e) {
             scoreBoard = new ScoreBoard();

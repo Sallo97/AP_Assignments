@@ -8,30 +8,28 @@ import java.io.*;
 import java.util.OptionalInt;
 
 public class ScoreBoard extends JTable implements Serializable, PropertyChangeListener {
-    // Properties
-    transient private DefaultTableModel model;
-    transient int entries = 10;
-    transient private String defaultName = "AP24/25";
-    transient private String defaultDirectory = "./score.ser";
+    private static final int ENTRIES = 10;
+    private static final String DEFAULT_NAME = "AP24/25";
+    private static final String DEFAULT_FILE = "./score.ser";
 
-
-    String[] names = new String[entries];
-    int[] score = new int[entries];
-    int[] moves = new int[entries];
-    transient String[] columnNames = {"RANK", "PLAYER'S NAME", "SCORE", "MOVES"};
+    String[] names = new String[ENTRIES];
+    int[] score = new int[ENTRIES];
+    int[] moves = new int[ENTRIES];
+    private static final String[] COLUMN_NAMES = {"RANK", "PLAYER'S NAME", "SCORE", "MOVES"};
 
     // Constructors
     public ScoreBoard() {
         // Initialize model
-        model = new DefaultTableModel(columnNames, 0){
+        // Properties
+        DefaultTableModel model = new DefaultTableModel(COLUMN_NAMES, 0) {
             @Override
             public boolean isCellEditable(int row, int column) {
                 return false;
             }
         };
         resetArrays();
-        model.addRow(columnNames);
-        for (int i = 0; i < entries ; i++) {
+        model.addRow(COLUMN_NAMES);
+        for (int i = 0; i < ENTRIES; i++) {
             model.addRow(new Object[]{i+1, names[i], score[i], moves[i]});
         }
 
@@ -45,7 +43,7 @@ public class ScoreBoard extends JTable implements Serializable, PropertyChangeLi
     private void resetScore(){
         resetArrays();
         // Reset names/scores/moves
-        for (int i = 1; i < entries + 1; i++){
+        for (int i = 1; i < ENTRIES + 1; i++){
             resetArrays();
             setValueAt(names[i], i, 1);
             setValueAt(score[i], i, 2);
@@ -54,8 +52,8 @@ public class ScoreBoard extends JTable implements Serializable, PropertyChangeLi
     }
 
     private void resetArrays(){
-        for (int i = 0; i < entries; i++) {
-            names[i] = defaultName;
+        for (int i = 0; i < ENTRIES; i++) {
+            names[i] = DEFAULT_NAME;
             score[i] = 0;
             moves[i] = 0;
         }
@@ -74,15 +72,13 @@ public class ScoreBoard extends JTable implements Serializable, PropertyChangeLi
         }
     }
 
-
-
     /**
      * TODO Add better description
      * Saves score to the disk
      */
     private void saveScore() {
         try{
-            FileOutputStream fos = new FileOutputStream(defaultDirectory);
+            FileOutputStream fos = new FileOutputStream(DEFAULT_FILE);
             ObjectOutputStream oos = new ObjectOutputStream(fos);
             oos.writeObject(this);
             fos.close();
@@ -92,7 +88,7 @@ public class ScoreBoard extends JTable implements Serializable, PropertyChangeLi
     private void updateScore(int numPlayer, int newScore, int newMove){
         // Find the index of the Rank to update (if any)
         OptionalInt idx = OptionalInt.empty();
-        for (int i = 0 ; i < entries; i++) {
+        for (int i = 0; i < ENTRIES; i++) {
             if (newScore > score[i] || (newScore == score[i] && newMove < moves[i])) {
                 idx = OptionalInt.of(i);
                 break;
@@ -110,7 +106,7 @@ public class ScoreBoard extends JTable implements Serializable, PropertyChangeLi
         String currentName = newName;
 
         // Shift entries and update scores and moves
-        for (int i = idx.getAsInt(); i < entries; i++) {
+        for (int i = idx.getAsInt(); i < ENTRIES; i++) {
             // Swap current values with the next row
             int tempScore = score[i];
             int tempMoves = moves[i];
@@ -142,6 +138,6 @@ public class ScoreBoard extends JTable implements Serializable, PropertyChangeLi
                 "GOT AN HIGH SCORE",
                 JOptionPane.PLAIN_MESSAGE);
         // Return the entered name, or a default value if canceled
-        return (name != null && !name.trim().isEmpty()) ? name.trim() : defaultName;
+        return (name != null && !name.trim().isEmpty()) ? name.trim() : DEFAULT_NAME;
     }
 }
