@@ -93,18 +93,6 @@ public class Controller extends JLabel implements Serializable, PropertyChangeLi
                 this.numPlayers = (Integer) evt.getNewValue();
                 break;
 
-            case "winner":
-                ArrayList<Integer> winners = (ArrayList<Integer>) evt.getNewValue();
-                StringBuilder result = new StringBuilder();
-                for (int i = 0; i < winners.size(); i++) {
-                    result.append(winners.get(i));
-                    if (i < winners.size() - 1) { // Add a space unless it's the last element
-                        result.append(" ");
-                    }
-                }
-                printWinner(result.toString());
-                break;
-
             case "moves":
                 endingGame((ArrayList<Integer>) evt.getNewValue());
         }
@@ -179,16 +167,20 @@ public class Controller extends JLabel implements Serializable, PropertyChangeLi
             // Set next player
             nextPlayerTimer.start();
         } else {
+            // Starting ending Game procedure
             firePropertyChange("moves", null, null);
         }
     }
 
     private void endingGame(ArrayList<Integer> moves){
 
-        // Winner logic
-        findWinner();
+        // Tell the counter the game ended
+        firePropertyChange("ended", null, null);
 
-        // For each player get its score and moves and pass it to ScoreBoard
+        // Find the Winner of the match
+        findWinner(moves);
+
+        // TODO Update Scoreboard
         for (int i = 0; i < numPlayers; i++) {
             System.out.println(moves.get(i) + " " + scores.get(i));
             firePropertyChange("rank", moves.get(i) , scores.get(i));
@@ -201,40 +193,52 @@ public class Controller extends JLabel implements Serializable, PropertyChangeLi
      * In case of a tie, the method finds the player(s) with the minimum number of moves.
      * Only if we found more than one player with the same maximum score and minimum moves, then it is a tie.
      */
-    private void findWinner() {
-        // Find the player(s) with the maximum score
-        ArrayList<Integer> winners = new ArrayList<>();
-        int max = this.scores.get(0);
+    private void findWinner(ArrayList<Integer> moves) {
+        ArrayList<Integer> scoreWinners = new ArrayList<>();
+        ArrayList<Integer> moveWinners = new ArrayList<>();
 
-        for (int i = 0; i < this.scores.size(); i++) {
-            int current = scores.get(i);
-            if (current > max) {
-                max = current; // Update max value
-                winners.clear(); // Clear previous indices
-                winners.add(i); // Add the current index
-            } else if (current == max) {
-                winners.add(i); // Add the index of the duplicate max value
+        // Find the players with the max score
+        int maxScore = scores.get(0);
+        for (int i = 0; i < numPlayers; i++) {
+            // Reset winner
+            if(scores.get(i) > maxScore){
+                maxScore = scores.get(i);
+                scoreWinners.clear();
+                scoreWinners.add(i);
+            } else if (scores.get(i) == maxScore) {
+                scoreWinners.add(i);
             }
         }
 
-        // Tell Counter that the game ended
-        firePropertyChange("ended", null, null);
-
-        if (winners.size() > 1){
-            // If there is a TIE call Counter to get who has the minimum number of moves
-            firePropertyChange("findWinner", null, winners);
-        } else {
-            // Print the Winner (The Winner is the one at position 0 in indices)
-            this.setText("PLAYER " + (winners.get(0) + 1) + " WON! | ");
+        // Find among the winners the ones with minimal moves
+        int minMoves = moves.get(scoreWinners.get(0));
+        for (int i = 0; i < scoreWinners.size(); i++){
+            if(moves.get(scoreWinners.get(i)) < minMoves){
+                minMoves = moves.get(scoreWinners.get(i));
+                moveWinners.clear();
+                moveWinners.add(i);
+            } else if (moves.get(scoreWinners.get(i)) == minMoves) {
+                moveWinners.add(i);
+            }
         }
+
+        // Print result
+        StringBuilder result = new StringBuilder("PLAYER(s) ");
+        for (Integer moveWinner : moveWinners) {
+            result.append(moveWinner + 1);
+            result.append(" ");
+        }
+        // Clear Winner case
+        if(moveWinners.size() == 1){
+            result.append(" WON! | ");
+        }
+        // Tie Case
+        else{
+            result.append(" TIED! | ");
+        }
+        setText(result.toString());
     }
 
-    /**
-     * Update the label's text showing the winner(s)
-     */
-    private void printWinner(String winnerName){
-        this.setText("PLAYER(s) " + winnerName + " WON! | ");
-    }
 
     /**
      * Update the players turn and shows its score
@@ -258,8 +262,6 @@ public class Controller extends JLabel implements Serializable, PropertyChangeLi
                 scores.set(i, 0); // Set the score to 0 for existing players
             }
         }
-
-        System.out.println("INITIALIZED score array with size = " + scores.size());
 
         // Set current player to 0
         currentPlayer = 0;
