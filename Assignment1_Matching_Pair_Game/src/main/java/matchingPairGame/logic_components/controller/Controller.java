@@ -171,10 +171,6 @@ public class Controller extends JLabel implements Serializable, PropertyChangeLi
     }
 
     private void endingGame(ArrayList<Integer> moves){
-
-        // Find the Winner of the match
-        findWinner(moves);
-
         // Update Scoreboard
         for (int i = 0; i < numPlayers; i++) {
             int[] toSend = {i + 1, scores.get(i), moves.get(i)};
@@ -183,6 +179,8 @@ public class Controller extends JLabel implements Serializable, PropertyChangeLi
 
         // Tell the counter the game ended
         firePropertyChange("ended", null, null);
+        // Find the Winner of the match
+        findWinner(moves);
     }
 
     /**

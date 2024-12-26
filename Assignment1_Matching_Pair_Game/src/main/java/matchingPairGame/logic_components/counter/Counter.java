@@ -73,10 +73,12 @@ public class Counter extends JLabel implements Serializable, ActionListener, Pro
             case "ended":
                 // set Text appropriately
                 end = true;
+                setText();
                 break;
 
             case "moves":
                 firePropertyChange("moves", null, moves);
+                break;
         }
     }
 
