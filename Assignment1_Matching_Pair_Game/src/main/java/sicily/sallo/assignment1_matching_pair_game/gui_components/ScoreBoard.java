@@ -5,6 +5,7 @@ import javax.swing.table.DefaultTableModel;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.Serializable;
+import java.util.OptionalInt;
 
 public class ScoreBoard extends JTable implements Serializable, PropertyChangeListener {
     // Properties
@@ -63,22 +64,36 @@ public class ScoreBoard extends JTable implements Serializable, PropertyChangeLi
     @Override
     public void propertyChange(PropertyChangeEvent evt) {
         if(evt.getPropertyName().equals("rank")){
-            int newMove = (Integer)evt.getOldValue();
-            int newScore = (Integer)evt.getNewValue();
-
-            // Check if the score is a new High Score
-            for(int i = 1; i < entries + 1; i++){
-                if(newScore > score[i] || newScore == score[i] && newMove < moves[i] ){
-                    // TODO POPUP TO GET NAME
-                    // UPDATE VALUE
-                    //setValueAt(names[i], i, 1); TODO GET IT FROM POPUP
-                    setValueAt(newScore, i, 2);
-                    setValueAt(newMove, i, 3);
-                    break;
-                }
-
-            }
+            updateScore((int)evt.getNewValue(), (int)evt.getOldValue());
         }
 
+    }
+
+    private void updateScore(int newScore, int newMove){
+        // Find the index of the Rank to update (if any)
+        OptionalInt idx = OptionalInt.empty();
+        for (int i = 1 ; i < entries + 1; i++) {
+            if (newScore > score[i] || newScore == score[i] && newMove == moves[i]) {
+                idx = OptionalInt.of(i);
+                break;
+            }
+        }
+        // If the idx exists update it
+        if (idx.isEmpty()) { return;}
+        int oldScore = score[idx.getAsInt()]; int oldMoves = moves[idx.getAsInt()]; String oldName = names[idx.getAsInt()];
+        String newName = "CULO";// TODO Get the name by the player
+
+        setValueAt(newName, idx.getAsInt(), 1);
+        setValueAt(newScore, idx.getAsInt(), 2);
+        setValueAt(newMove, idx.getAsInt(), 3);
+
+        // Update all values below
+        for (int i = idx.getAsInt() + 1; i < entries ; i++) {
+            newName = oldName; newScore = oldScore; newMove = oldMoves;
+            oldName = names[i]; oldScore = score[i]; oldMoves = moves[i];
+            setValueAt(newName, i, 1);
+            setValueAt(newScore, i, 2);
+            setValueAt(newMove, i, 3);
+        }
     }
 }
