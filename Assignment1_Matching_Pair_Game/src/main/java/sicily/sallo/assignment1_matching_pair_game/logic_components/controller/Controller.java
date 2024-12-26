@@ -21,17 +21,22 @@ import java.util.Optional;
  *   - If the cards do not match, they are flipped back to face-down (`FACE_DOWN`).
  */
 public class Controller extends JLabel implements Serializable, PropertyChangeListener, VetoableChangeListener {
-    // Properties
+    // PROPERTIES
+    // Multiplayer Logic
     private ArrayList<Integer> scores =  new ArrayList<>(); // number of matched pairs during a game
     private int numPlayers = 1;
     private int currentPlayer = 0;
+
+    // Game Logic
     GameDifficulty currentDifficulty = GameDifficulty.EASY;
     int foundPairs = 0;
     private Pair pair; // represents the current pair of cards considered
+    GameState gameState = GameState.IN_GAME;
+
+    // Timers
     private final Timer matchTimer;
     private final Timer nextPlayerTimer;
     int time = 500; // in milliseconds
-    GameState gameState = GameState.IN_GAME;
 
     // Constructors
     /**
@@ -46,8 +51,6 @@ public class Controller extends JLabel implements Serializable, PropertyChangeLi
 
         nextPlayerTimer = new Timer(time, e -> setNextPlayer());
         nextPlayerTimer.setRepeats(false);
-
-        this.reset();
     }
 
     // Public Methods
@@ -77,7 +80,9 @@ public class Controller extends JLabel implements Serializable, PropertyChangeLi
 
             case "board":
                 this.gameState = (GameState) evt.getNewValue();
-                this.reset();
+                if (gameState == GameState.IN_GAME) {
+                    this.reset();
+                }
                 break;
 
             case "difficulty":
@@ -185,7 +190,8 @@ public class Controller extends JLabel implements Serializable, PropertyChangeLi
 
         // For each player get its score and moves and pass it to ScoreBoard
         for (int i = 0; i < numPlayers; i++) {
-            firePropertyChange("rank",moves.get(i) , scores.get(i));
+            System.out.println(moves.get(i) + " " + scores.get(i));
+            firePropertyChange("rank", moves.get(i) , scores.get(i));
         }
     }
 
@@ -252,6 +258,8 @@ public class Controller extends JLabel implements Serializable, PropertyChangeLi
                 scores.set(i, 0); // Set the score to 0 for existing players
             }
         }
+
+        System.out.println("INITIALIZED score array with size = " + scores.size());
 
         // Set current player to 0
         currentPlayer = 0;
